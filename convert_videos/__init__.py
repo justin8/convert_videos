@@ -15,6 +15,12 @@ from colorama import Fore, Back, Style, init
 # Init colorama
 init()
 
+valid_codecs = {
+        "HEVC": "libx265",
+        "AVC": "h264",
+        "MPEG-4 Visual": "mpeg4"
+    }
+
 
 def cprint(colour, message):
     colours = {
@@ -25,12 +31,10 @@ def cprint(colour, message):
     print(colours[colour] + str(message) + Style.RESET_ALL)
 
 
-def get_ffmpeg_codec_from_format(format_string):
-    translation_map = {
-            "HEVC": "libx265",
-            "AVC": "h264",
-        }
-    return translation_map[format_string]
+def get_codec_from_format(format_string):
+    if format_string in valid_codecs.values():
+        return valid_codecs[format_string]
+    return "Unknown"
 
 
 def get_unconverted_items(codec_map, desired_codec):
@@ -123,9 +127,14 @@ def get_codec(file_path):
     metadata = MediaInfo.parse(os.path.join(file_path))
     for track in metadata.tracks:
         if track.track_type == "Video":
-            ffmpeg_codec = get_ffmpeg_codec_from_format(track.format)
+            ffmpeg_codec = get_codec_from_format(track.format)
             return {file_path: ffmpeg_codec}
     raise Exception("No video track found")
+
+
+def validate_target_video_codec(codec):
+    if codec not in valid_codecs.values():
+        raise Exception("Unsupported codec requested")
 
 
 def main():
@@ -176,7 +185,9 @@ def main():
     global VERBOSE
     VERBOSE = args.verbose
 
-    codec_map = get_codec_map(directory)
+    validate_target_video_codec(args.video_codec)
+
+    codec_map = get_codec_map(args.directory)
     unconverted_items = get_unconverted_items(codec_map, args.video_codec)
 
     failures = []
