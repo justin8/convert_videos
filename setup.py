@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="convert_videos",
-    version="1.0.2",
+    version="1.0.3",
     author="Justin Dray",
     author_email="justin@dray.be",
     url="https://github.com/justin8/tv_report",
@@ -17,6 +17,7 @@ setup(
     ],
     tests_require=["nose",
         "coverage",
+        "mock",
     ],
     test_suite="nose.collector",
     entry_points={

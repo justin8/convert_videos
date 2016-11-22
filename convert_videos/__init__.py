@@ -32,9 +32,10 @@ def cprint(colour, message):
 
 
 def get_codec_from_format(format_string):
-    if format_string in valid_codecs.values():
+    try:
         return valid_codecs[format_string]
-    return "Unknown"
+    except:
+        return "Unknown"
 
 
 def get_unconverted_items(codec_map, desired_codec):
