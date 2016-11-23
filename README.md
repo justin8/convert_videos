@@ -1,5 +1,5 @@
-# TV Report
-[![Run Status](https://api.shippable.com/projects/582f2b4fc5316610006ad251/badge?branch=master)](https://app.shippable.com/projects/582f2b4fc5316610006ad251)
-[![Coverage Badge](https://api.shippable.com/projects/582f2b4fc5316610006ad251/coverageBadge?branch=master)](https://app.shippable.com/projects/582f2b4fc5316610006ad251)
+# Convert Videos
+[![Run Status](https://api.shippable.com/projects/583586b74dac720f008ca29c/badge?branch=master)](https://app.shippable.com/projects/583586b74dac720f008ca29c)
+[![Coverage Badge](https://api.shippable.com/projects/583586b74dac720f008ca29c/coverageBadge?branch=master)](https://app.shippable.com/projects/583586b74dac720f008ca29c)
 
-This parses all episodes of TV shows in a file tree and summarizes the quality and codecs. Terminal output includes per-season totals, per-show totals and global totals. It also generates a html report.
+This application will take a folder full of videos and make sure they are converted to the specified format.
