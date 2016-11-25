@@ -73,7 +73,7 @@ def convertRemainingVideos(fileMap, args):
                 renamedFilePath = getRenamedVideoName(filePath)
                 checkIfWritable(renamedFilePath)
                 convertVideo(filePath, tempVideo, args)
-                os.shutil.move(tempVideo, renamedFilePath)
+                shutil.move(tempVideo, renamedFilePath)
                 if args.in_place:
                     os.remove(filePath)
                     shutil.move(renamedFilePath, changeExtensionToMKV(filePath))
