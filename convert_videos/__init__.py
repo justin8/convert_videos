@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 
-from multiprocessing.pool import ThreadPool
 import argparse
-import os
-import re
-import shutil
 import logging
+import os
+import shutil
 import tempfile
-import time
+import traceback
 
 import ffmpy
-from pymediainfo import MediaInfo
-from colorama import Fore, Back, Style, init
+from colorama import Fore, Style, init
 import video_utils
 
 # Init colorama
@@ -43,18 +40,18 @@ def checkIfWritable(filePath):
     log.info("Checking if %s is writable" % filePath)
     try:
         with open(filePath, 'w') as f:
-            f.writeline("test")
+            f.writelines("test")
     finally:
         os.remove(filePath)
 
 
-def convertVideo(filePath, args):
-    tempVideo = tempfile.mkstemp(suffix=".mkv")
+def convertVideo(filePath, tempVideo, args):
     cprint("green", "Starting to convert %s" % filePath)
     scale = "-vf scale=%s:-2" % args.width if args.width else ""
+    outputSettings = "-y -threads 0 -vcodec %s -strict -2 -crf %s %s %s -preset %s -acodec %s -ab %s -ac %s" % (args.video_codec, args.quality, scale, args.extra_args, args.preset, args.audio_codec, args.audio_bitrate, args.audio_channels)
     ff = ffmpy.FFmpeg(
             inputs={filePath: None},
-            outputs={tempVideo: "-y -threads 0 -vcodec %s -strict -2 -crf %s %s %s -preset %s -acodec %s -ab %s -ac %s" % (args.video_codec, args.quality, scale, args.extra_args, args.preset, args.audio_codec, args.audio_bitrate, args.audio_channels)})
+            outputs={tempVideo: outputSettings})
     ff.run()
     return tempVideo
 
@@ -64,17 +61,18 @@ def convertRemainingVideos(fileMap, args):
     for directory in fileMap:
         cprint("green", "Working in directory %s" % directory)
         i = 0
-        for filename, metadata in fileMap[directory]:
+        for filename, metadata in fileMap[directory].items():
             i += 1
             cprint("green", "Parsing video %s (%s/%s)" % (filename, i, len(fileMap[directory])))
             if video_utils.getCodecFromFormat(metadata['format']) == args.video_codec:
                 continue
 
             try:
+                tempVideo = tempfile.mkstemp(suffix=".mkv")[1]
                 filePath = os.path.join(directory, filename)
                 renamedFilePath = getRenamedVideoName(filePath)
                 checkIfWritable(renamedFilePath)
-                tempVideo = convertVideo(filePath, args)
+                convertVideo(filePath, tempVideo, args)
                 os.shutil.move(tempVideo, renamedFilePath)
                 if args.in_place:
                     os.remove(filePath)
@@ -83,6 +81,8 @@ def convertRemainingVideos(fileMap, args):
                 cprint("red", "Failed to convert %s" % filePath)
                 failures.append(filePath)
                 print(e)
+                traceback.print_exc()
+                print()
             finally:
                 if os.path.exists(tempVideo):
                     os.remove(tempVideo)
@@ -105,7 +105,7 @@ def main():
                         action="store")
     parser.add_argument("-q", "--quality",
                         help="Quality quantizer",
-                        default=21,
+                        default="21",
                         action="store")
     parser.add_argument("-p", "--preset",
                         help="Encoding preset to use",
@@ -145,7 +145,8 @@ def main():
     elif args.verbose >= 2:
         logging.basicConfig(level=logging.DEBUG)
 
-    fileMap = videoUtils.getFileMap(directory)
+    cprint("green", "Checking format of existing files...")
+    fileMap = video_utils.getFileMap(args.directory)
 
     convertRemainingVideos(fileMap, args)
 
