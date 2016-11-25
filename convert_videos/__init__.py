@@ -75,6 +75,7 @@ def convertRemainingVideos(fileMap, args):
                 convertVideo(filePath, tempVideo, args)
                 shutil.move(tempVideo, renamedFilePath)
                 if args.in_place:
+                    cprint("green", "Replacing original file %s" % filePath)
                     os.remove(filePath)
                     shutil.move(renamedFilePath, changeExtensionToMKV(filePath))
             except Exception as e:
