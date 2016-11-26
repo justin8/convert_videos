@@ -4,11 +4,12 @@ import argparse
 import logging
 import os
 import shutil
+import sys
 import tempfile
 import traceback
 
-import ffmpy
 from colorama import Fore, Style, init
+import ffmpy
 import video_utils
 
 # Init colorama
@@ -145,6 +146,13 @@ def main():
         logging.basicConfig(level=logging.INFO)
     elif args.verbose >= 2:
         logging.basicConfig(level=logging.DEBUG)
+
+    if not args.video_codec in video_utils.listParsableCodecs():
+        cprint("red", "Unsupported video codec requested")
+        print("  Supported video codecs:")
+        for codec in video_utils.listParsableCodecs():
+            print("  " + codec)
+        sys.exit(1)
 
     cprint("green", "Checking format of existing files...")
     fileMap = video_utils.getFileMap(args.directory)
