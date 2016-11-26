@@ -68,12 +68,16 @@ def convertRemainingVideos(fileMap, args):
             if video_utils.getCodecFromFormat(metadata['format']) == args.video_codec:
                 continue
 
+            tempVideo = tempfile.mkstemp(suffix=".mkv")[1]
+            filePath = os.path.join(directory, filename)
+            renamedFilePath = getRenamedVideoName(filePath)
+            if os.path.exists(renamedFilePath):
+                continue
+
             try:
-                tempVideo = tempfile.mkstemp(suffix=".mkv")[1]
-                filePath = os.path.join(directory, filename)
-                renamedFilePath = getRenamedVideoName(filePath)
                 checkIfWritable(renamedFilePath)
                 convertVideo(filePath, tempVideo, args)
+                cprint("green", "Finished converting video")
                 shutil.move(tempVideo, renamedFilePath)
                 if args.in_place:
                     cprint("green", "Replacing original file %s" % filePath)
