@@ -67,6 +67,7 @@ def convertRemainingVideos(fileMap, args):
             i += 1
             cprint("green", "Parsing video %s (%s/%s)" % (filename, i, len(fileMap[directory])))
             if video_utils.getCodecFromFormat(metadata['format']) == args.video_codec:
+                cprint("green", "%s is already in the desired format" % filename)
                 continue
 
             tempVideo = tempfile.mkstemp(suffix=".mkv")[1]
