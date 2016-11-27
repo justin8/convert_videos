@@ -27,9 +27,10 @@ def cprint(colour, message):
     print(colours[colour] + str(message) + Style.RESET_ALL)
 
 
-def getRenamedVideoName(filename):
+def getRenamedVideoName(filename, ffmpegCodec):
     splitFilename = os.path.splitext(filename)
-    return "%s - x265.mkv" % splitFilename[0]
+    prettyCodec = video_utils.getPrettyCodecFromFFMPEGCodec(ffmpegCodec)
+    return "%s - %s.mkv" % (splitFilename[0], prettyCodec)
 
 
 def changeExtensionToMKV(filename):
@@ -70,7 +71,7 @@ def convertRemainingVideos(fileMap, args):
 
             tempVideo = tempfile.mkstemp(suffix=".mkv")[1]
             filePath = os.path.join(directory, filename)
-            renamedFilePath = getRenamedVideoName(filePath)
+            renamedFilePath = getRenamedVideoName(filePath, args.video_codec)
             if os.path.exists(renamedFilePath):
                 continue
 
