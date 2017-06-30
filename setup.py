@@ -6,7 +6,7 @@ setup(
     version="1.1.4",
     author="Justin Dray",
     author_email="justin@dray.be",
-    url="https://github.com/justin8/tv_report",
+    url="https://github.com/justin8/convert_videos",
     description="This tool accepts a folder and converts any videos that are not already in x265/HEVC format.",
     packages=find_packages(),
     license="MIT",
