@@ -33,9 +33,9 @@ def getRenamedVideoName(filename, ffmpegCodec):
     return "%s - %s.mkv" % (splitFilename[0], prettyCodec)
 
 
-def changeExtensionToMKV(filename):
+def changeExtensionTo(filename, extension):
     splitFilename = filename.split('.')
-    return "%s.mkv" % splitFilename[0]
+    return "{filename}.{extension}".format(filename=splitFilename[0], extension=extension)
 
 
 def checkIfWritable(filePath):
@@ -70,7 +70,7 @@ def convertRemainingVideos(fileMap, args):
                 cprint("green", "%s is already in the desired format" % filename)
                 continue
 
-            tempVideo = tempfile.mkstemp(suffix=".mkv")[1]
+            tempVideo = tempfile.mkstemp(suffix=".{container}".format(args.container))[1]
             filePath = os.path.join(directory, filename)
             renamedFilePath = getRenamedVideoName(filePath, args.video_codec)
             if os.path.exists(renamedFilePath):
@@ -84,7 +84,7 @@ def convertRemainingVideos(fileMap, args):
                 if args.in_place:
                     cprint("green", "Replacing original file %s" % filePath)
                     os.remove(filePath)
-                    shutil.move(renamedFilePath, changeExtensionToMKV(filePath))
+                    shutil.move(renamedFilePath, changeExtensionTo(filePath, args.container))
             except Exception as e:
                 cprint("red", "Failed to convert %s" % filePath)
                 failures.append(filePath)
@@ -123,6 +123,9 @@ def main():
                         help="Any extra arguments to pass to ffmpeg",
                         default="",
                         action="store")
+    parser.add_argument("-c", "--container",
+                        help="The container format to output in",
+                        default="mkv")
     parser.add_argument("-i", "--in-place",
                         help="Replace files in-place instead of appending ' x265' to the end",
                         action="store_true")

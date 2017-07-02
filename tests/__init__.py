@@ -5,6 +5,8 @@ import mock
 class testConvertVideos(unittest.TestCase):
 
 
-    def testChangeExtensionToMKV(self):
-        self.assertEqual(convert_videos.changeExtensionToMKV("asdf.mov"), "asdf.mkv")
-        self.assertEqual(convert_videos.changeExtensionToMKV("/foo/bar/baz.mov"), "/foo/bar/baz.mkv")
+    def testChangeExtensionTo(self):
+        self.assertEqual(convert_videos.changeExtensionTo("asdf.mov", "mkv"), "asdf.mkv")
+        self.assertEqual(convert_videos.changeExtensionTo("/foo/bar/baz.mov", "mkv"), "/foo/bar/baz.mkv")
+        self.assertEqual(convert_videos.changeExtensionTo("asdf.mov", "avi"), "asdf.avi")
+        self.assertEqual(convert_videos.changeExtensionTo("/foo/bar/baz.mov", "mp4"), "/foo/bar/baz.mp4")
