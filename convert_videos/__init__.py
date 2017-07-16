@@ -70,7 +70,7 @@ def convertRemainingVideos(fileMap, args):
                 cprint("green", "%s is already in the desired format" % filename)
                 continue
 
-            tempVideo = tempfile.mkstemp(suffix=".{container}".format(args.container))[1]
+            tempVideo = tempfile.mkstemp(suffix=".{container}".format(container=args.container))[1]
             filePath = os.path.join(directory, filename)
             renamedFilePath = getRenamedVideoName(filePath, args.video_codec)
             if os.path.exists(renamedFilePath):

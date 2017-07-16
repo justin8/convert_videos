@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="convert_videos",
-    version="1.1.6",
+    version="1.1.7",
     author="Justin Dray",
     author_email="justin@dray.be",
     url="https://github.com/justin8/convert_videos",
