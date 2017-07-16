@@ -113,11 +113,11 @@ def main():
                         action="store")
     parser.add_argument("-q", "--quality",
                         help="Quality quantizer",
-                        default="21",
+                        default="23",
                         action="store")
     parser.add_argument("-p", "--preset",
                         help="Encoding preset to use",
-                        default="slow",
+                        default="medium",
                         action="store")
     parser.add_argument("-e", "--extra-args",
                         help="Any extra arguments to pass to ffmpeg",
