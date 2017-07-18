@@ -70,7 +70,7 @@ def convertRemainingVideos(fileMap, args):
                 cprint("green", "%s is already in the desired format" % filename)
                 continue
 
-            tempVideo = tempfile.mkstemp(suffix=".{container}".format(container=args.container))[1]
+            tempVideo = tempfile.mkstemp(dir=args.temp_dir, suffix=".{container}".format(container=args.container))[1]
             filePath = os.path.join(directory, filename)
             renamedFilePath = getRenamedVideoName(filePath, args.video_codec)
             if os.path.exists(renamedFilePath):
@@ -129,6 +129,10 @@ def main():
     parser.add_argument("-i", "--in-place",
                         help="Replace files in-place instead of appending ' x265' to the end",
                         action="store_true")
+    parser.add_argument("--temp-dir",
+                        help="The temp dir to store files in during conversion",
+                        default="None",
+                        action="store")
     parser.add_argument("--video-codec",
                         help="The video codec to use for encoding",
                         default="libx265",
