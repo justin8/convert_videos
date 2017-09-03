@@ -113,7 +113,7 @@ def main():
                         action="store")
     parser.add_argument("-q", "--quality",
                         help="Quality quantizer",
-                        default="23",
+                        default="22",
                         action="store")
     parser.add_argument("-p", "--preset",
                         help="Encoding preset to use",
