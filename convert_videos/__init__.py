@@ -74,6 +74,7 @@ def convertRemainingVideos(fileMap, args):
             filePath = os.path.join(directory, filename)
             renamedFilePath = getRenamedVideoName(filePath, args.video_codec)
             if os.path.exists(renamedFilePath):
+                cprint("green", "Renamed file %s already exists. Skipping" % renamedFilePath)
                 continue
 
             try:
