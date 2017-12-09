@@ -55,6 +55,8 @@ def convertVideo(filePath, tempVideo, args):
             inputs={filePath: None},
             outputs={tempVideo: outputSettings})
     ff.run()
+    old_permissions = os.stat(filePath).st_mode
+    os.chmod(tempVideo, old_permissions)
     return tempVideo
 
 
@@ -161,7 +163,7 @@ def main():
     elif args.verbose >= 2:
         logging.basicConfig(level=logging.DEBUG)
 
-    if not args.video_codec in video_utils.listParsableCodecs():
+    if args.video_codec not in video_utils.listParsableCodecs():
         cprint("red", "Unsupported video codec requested")
         print("  Supported video codecs:")
         for codec in video_utils.listParsableCodecs():
