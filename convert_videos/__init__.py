@@ -47,10 +47,35 @@ def checkIfWritable(filePath):
         os.remove(filePath)
 
 
+def parseVcodec(video_codec, quality, width):
+    output = "-vcodec {}".format(video_codec)
+    if video_codec == "copy":
+        return output
+
+    output += " -crf {}".format(quality)
+    if video_codec == "libx265":
+        output += " -strict -2"
+
+    if width:
+        output += " -vf scale={}:-2".format(width)
+
+    return output
+    
+
+def parseAcodec(audio_codec, audio_bitrate, audio_channels):
+    output = "-acodec {}".format(audio_codec)
+    if audio_codec == "copy":
+        return output
+
+    output += " -ab {} -ac {}".format(audio_bitrate, audio_channels)
+    return output
+
+
 def convertVideo(filePath, tempVideo, args):
     cprint("green", "Starting to convert %s" % filePath)
-    scale = "-vf scale=%s:-2" % args.width if args.width else ""
-    outputSettings = "-y -threads 0 -vcodec %s -strict -2 -crf %s %s %s -preset %s -acodec %s -ab %s -ac %s" % (args.video_codec, args.quality, scale, args.extra_args, args.preset, args.audio_codec, args.audio_bitrate, args.audio_channels)
+    vcodec = parseVcodec(args.video_codec, args.quality, args.width)
+    acodec = parseAcodec(args.audio_codec, args.audio_bitrate, args.audio_channels)
+    outputSettings = "-y -threads 0 %s %s %s -preset %s" % (vcodec, args.extra_args, args.preset, acodec)
     ff = ffmpy.FFmpeg(
             inputs={filePath: None},
             outputs={tempVideo: outputSettings})
