@@ -29,7 +29,10 @@ def cprint(colour, message):
 
 def getRenamedVideoName(filename, ffmpegCodec):
     splitFilename = os.path.splitext(filename)
-    prettyCodec = video_utils.getPrettyCodecFromFFMPEGCodec(ffmpegCodec)
+    if ffmpegCodec == "copy":
+        prettyCodec = "copy"
+    else:
+        prettyCodec = video_utils.getPrettyCodecFromFFMPEGCodec(ffmpegCodec)
     return "%s - %s.mkv" % (splitFilename[0], prettyCodec)
 
 
@@ -75,7 +78,7 @@ def convertVideo(filePath, tempVideo, args):
     cprint("green", "Starting to convert %s" % filePath)
     vcodec = parseVcodec(args.video_codec, args.quality, args.width)
     acodec = parseAcodec(args.audio_codec, args.audio_bitrate, args.audio_channels)
-    outputSettings = "-y -threads 0 %s %s %s -preset %s" % (vcodec, args.extra_args, args.preset, acodec)
+    outputSettings = "-y -threads 0 %s %s %s -preset %s" % (vcodec, acodec, args.extra_args, args.preset)
     ff = ffmpy.FFmpeg(
             inputs={filePath: None},
             outputs={tempVideo: outputSettings})
@@ -108,7 +111,9 @@ def convertRemainingVideos(fileMap, args):
                 checkIfWritable(renamedFilePath)
                 convertVideo(filePath, tempVideo, args)
                 cprint("green", "Finished converting video")
+                cprint("green", "Copying file from temp directory")
                 shutil.move(tempVideo, renamedFilePath)
+                cprint("green", "Successfully copied file")
                 if args.in_place:
                     cprint("green", "Replacing original file %s" % filePath)
                     os.remove(filePath)
@@ -159,7 +164,7 @@ def main():
                         action="store_true")
     parser.add_argument("--temp-dir",
                         help="The temp dir to store files in during conversion",
-                        default="None",
+                        default=tempfile.gettempdir(),
                         action="store")
     parser.add_argument("--video-codec",
                         help="The video codec to use for encoding",
@@ -188,12 +193,13 @@ def main():
     elif args.verbose >= 2:
         logging.basicConfig(level=logging.DEBUG)
 
-    if args.video_codec not in video_utils.listParsableCodecs():
-        cprint("red", "Unsupported video codec requested")
-        print("  Supported video codecs:")
-        for codec in video_utils.listParsableCodecs():
-            print("  " + codec)
-        sys.exit(1)
+    if args.video_codec != "copy":
+        if args.video_codec not in video_utils.listParsableCodecs():
+            cprint("red", "Unsupported video codec requested")
+            print("  Supported video codecs:")
+            for codec in video_utils.listParsableCodecs():
+                print("  " + codec)
+            sys.exit(1)
 
     cprint("green", "Checking format of existing files...")
     fileMap = video_utils.getFileMap(args.directory)
