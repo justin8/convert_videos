@@ -172,7 +172,7 @@ def main():
                         action="store")
     parser.add_argument("--audio-codec",
                         help="The audio codec to use for encoding",
-                        default="libfdk_aac",
+                        default="aac",
                         action="store")
     parser.add_argument("--audio-bitrate",
                         help="The bitrate of the audio codec",
