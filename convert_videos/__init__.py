@@ -20,10 +20,10 @@ log = logging.getLogger()
 
 def cprint(colour, message):
     colours = {
-            "green": Fore.GREEN,
-            "blue": Fore.BLUE,
-            "red": Fore.RED
-            }
+        "green": Fore.GREEN,
+        "blue": Fore.BLUE,
+        "red": Fore.RED
+    }
     print(colours[colour] + str(message) + Style.RESET_ALL)
 
 
@@ -63,7 +63,7 @@ def parseVcodec(video_codec, quality, width):
         output += " -vf scale={}:-2".format(width)
 
     return output
-    
+
 
 def parseAcodec(audio_codec, audio_bitrate, audio_channels):
     output = "-acodec {}".format(audio_codec)
@@ -77,11 +77,13 @@ def parseAcodec(audio_codec, audio_bitrate, audio_channels):
 def convertVideo(filePath, tempVideo, args):
     cprint("green", "Starting to convert %s" % filePath)
     vcodec = parseVcodec(args.video_codec, args.quality, args.width)
-    acodec = parseAcodec(args.audio_codec, args.audio_bitrate, args.audio_channels)
-    outputSettings = "-y -threads 0 %s %s %s -preset %s" % (vcodec, acodec, args.extra_args, args.preset)
+    acodec = parseAcodec(
+        args.audio_codec, args.audio_bitrate, args.audio_channels)
+    outputSettings = "-y -threads 0 %s %s %s -preset %s" % (
+        vcodec, acodec, args.extra_args, args.preset)
     ff = ffmpy.FFmpeg(
-            inputs={filePath: None},
-            outputs={tempVideo: outputSettings})
+        inputs={filePath: None},
+        outputs={tempVideo: outputSettings})
     ff.run()
     old_permissions = os.stat(filePath).st_mode
     os.chmod(tempVideo, old_permissions)
@@ -95,16 +97,22 @@ def convertRemainingVideos(fileMap, args):
         i = 0
         for filename, metadata in fileMap[directory].items():
             i += 1
-            cprint("green", "Parsing video %s (%s/%s)" % (filename, i, len(fileMap[directory])))
+            cprint("green", "Parsing video %s (%s/%s)" %
+                   (filename, i, len(fileMap[directory])))
             if video_utils.getCodecFromFormat(metadata['format']) == args.video_codec:
                 cprint("green", "%s is already in the desired format" % filename)
-                continue
+                if args.force:
+                    cprint("green", f"Forcing conversion anyway (--force is enabled)")
+                else:
+                    continue
 
-            tempVideo = tempfile.mkstemp(dir=args.temp_dir, suffix=".{container}".format(container=args.container))[1]
+            tempVideo = tempfile.mkstemp(
+                dir=args.temp_dir, suffix=".{container}".format(container=args.container))[1]
             filePath = os.path.join(directory, filename)
             renamedFilePath = getRenamedVideoName(filePath, args.video_codec)
             if os.path.exists(renamedFilePath):
-                cprint("green", "Renamed file %s already exists. Skipping" % renamedFilePath)
+                cprint("green", "Renamed file %s already exists. Skipping" %
+                       renamedFilePath)
                 continue
 
             try:
@@ -117,7 +125,8 @@ def convertRemainingVideos(fileMap, args):
                 if args.in_place:
                     cprint("green", "Replacing original file %s" % filePath)
                     os.remove(filePath)
-                    shutil.move(renamedFilePath, changeExtensionTo(filePath, args.container))
+                    shutil.move(renamedFilePath, changeExtensionTo(
+                        filePath, args.container))
             except Exception as e:
                 cprint("red", "Failed to convert %s" % filePath)
                 failures.append(filePath)
@@ -137,9 +146,13 @@ def convertRemainingVideos(fileMap, args):
 
 
 def main():
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-v", "--verbose",
                         help="Print more verbose messages",
+                        action="store_true")
+    parser.add_argument("-f", "--force",
+                        help="Force to run even if the specified videos are already in the expected format",
                         action="store_true")
     parser.add_argument("-w", "--width",
                         help="Set the width if you would like to resize the video",
