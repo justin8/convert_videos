@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "convert_videos"
+version = "1.12.13"
+description = "This tool allows bulk conversion of videos using ffmpeg"
+authors = ["Justin Dray <justin@dray.be>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+colorama = "^0.4.3"
+ffmpy = "^0.2.2"
+video_utils = "^1.1.1"
+
+[tool.poetry.dev-dependencies]
+nose = "^1.3.7"
+coverage = "^5.0"
+mock = "^3.0.5"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
