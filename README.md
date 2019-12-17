@@ -6,6 +6,7 @@ This tool allows bulk conversion of videos using ffmpeg
 
 
 ## Usage
+```
 usage: convert-videos [-h] [-v] [-f] [-w WIDTH] [-q QUALITY] [-p PRESET] [-e EXTRA_ARGS] [-c CONTAINER] [-i] [--temp-dir TEMP_DIR] [--video-codec VIDEO_CODEC] [--audio-codec AUDIO_CODEC] [--audio-bitrate AUDIO_BITRATE] [--audio-channels AUDIO_CHANNELS] directory
 
 positional arguments:
@@ -35,3 +36,4 @@ optional arguments:
                         The bitrate of the audio codec (default: 160k)
   --audio-channels AUDIO_CHANNELS
                         The number of audio channels to use (default: 2)
+```
