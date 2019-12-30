@@ -90,6 +90,34 @@ def convertVideo(filePath, tempVideo, args):
     return tempVideo
 
 
+def processVideo(renamedFilePath, filePath, tempVideo, failures, args):
+    try:
+        checkIfWritable(renamedFilePath)
+        convertVideo(filePath, tempVideo, args)
+        cprint("green", "Finished converting video")
+        cprint("green", "Copying file from temp directory")
+        shutil.move(tempVideo, renamedFilePath)
+        cprint("green", "Successfully copied file")
+        if args.in_place:
+            cprint("green", "Replacing original file %s" % filePath)
+            os.remove(filePath)
+            shutil.move(renamedFilePath, changeExtensionTo(
+                filePath, args.container))
+    except Exception as e:
+        cprint("red", "Failed to convert %s" % filePath)
+        failures.append(filePath)
+        print(e)
+        traceback.print_exc()
+        print()
+    finally:
+        if os.path.exists(tempVideo):
+            os.remove(tempVideo)
+
+
+def generateTempVideoFile(directory, container):
+    return tempfile.mkstemp(dir=directory, suffix=f".{container}")[1]
+
+
 def convertRemainingVideos(fileMap, args):
     failures = []
     for directory in fileMap:
@@ -106,36 +134,16 @@ def convertRemainingVideos(fileMap, args):
                 else:
                     continue
 
-            tempVideo = tempfile.mkstemp(
-                dir=args.temp_dir, suffix=".{container}".format(container=args.container))[1]
+            tempVideo = generateTempVideoFile(args.temp_dir, args.container)
             filePath = os.path.join(directory, filename)
             renamedFilePath = getRenamedVideoName(filePath, args.video_codec)
             if os.path.exists(renamedFilePath):
+                # TODO: Add skipping of videos that fit the rename format of the tool to prevent re-processing
                 cprint("green", "Renamed file %s already exists. Skipping" %
                        renamedFilePath)
                 continue
 
-            try:
-                checkIfWritable(renamedFilePath)
-                convertVideo(filePath, tempVideo, args)
-                cprint("green", "Finished converting video")
-                cprint("green", "Copying file from temp directory")
-                shutil.move(tempVideo, renamedFilePath)
-                cprint("green", "Successfully copied file")
-                if args.in_place:
-                    cprint("green", "Replacing original file %s" % filePath)
-                    os.remove(filePath)
-                    shutil.move(renamedFilePath, changeExtensionTo(
-                        filePath, args.container))
-            except Exception as e:
-                cprint("red", "Failed to convert %s" % filePath)
-                failures.append(filePath)
-                print(e)
-                traceback.print_exc()
-                print()
-            finally:
-                if os.path.exists(tempVideo):
-                    os.remove(tempVideo)
+            processVideo(renamedFilePath, filePath, tempVideo, failures, args)
 
         cprint("green", "Finished converting all videos in %s" % directory)
     cprint("green", "Finished converting all videos!")

@@ -15,10 +15,13 @@ ffmpy = "^0.2.2"
 video_utils = "^1.1.1"
 
 [tool.poetry.dev-dependencies]
-nose = "^1.3.7"
 coverage = "^5.0"
 mock = "^3.0.5"
 flake8 = "^3.7"
+pytest-cov = "^2.8"
+pylint = "^2.4"
+pytest = "^5.3"
+autopep8 = "^1.4.4"
 
 [build-system]
 requires = ["poetry>=0.12"]
