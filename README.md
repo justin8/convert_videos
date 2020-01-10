@@ -1,10 +1,11 @@
 # Convert Videos
+
 ![Test Status](https://github.com/justin8/convert_videos/workflows/Tests/badge.svg?branch=master)
 
 This tool allows bulk conversion of videos using ffmpeg
 
-
 ## Usage
+
 ```
 usage: convert-videos [-h] [-v] [-f] [-w WIDTH] [-q QUALITY] [-p PRESET] [-e EXTRA_ARGS] [-c CONTAINER] [-i] [--temp-dir TEMP_DIR] [--video-codec VIDEO_CODEC] [--audio-codec AUDIO_CODEC] [--audio-bitrate AUDIO_BITRATE] [--audio-channels AUDIO_CHANNELS] directory
 
