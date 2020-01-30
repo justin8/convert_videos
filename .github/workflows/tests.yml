@@ -26,3 +26,8 @@ jobs:
           poetry install
           poetry build
           ./test.sh
+      - name: Upload code coverage
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: |
+          bash <(curl -s https://codecov.io/bash) -Z || echo 'Codecov failed to upload'
