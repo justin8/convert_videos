@@ -3,39 +3,35 @@
 ![Test Status](https://github.com/justin8/convert_videos/workflows/Tests/badge.svg?branch=master)
 [![codecov](https://codecov.io/gh/justin8/convert_videos/branch/master/graph/badge.svg)](https://codecov.io/gh/justin8/convert_videos)
 
-
 This tool allows bulk conversion of videos using ffmpeg
 
 ## Usage
 
 ```
-usage: convert-videos [-h] [-v] [-f] [-w WIDTH] [-q QUALITY] [-p PRESET] [-e EXTRA_ARGS] [-c CONTAINER] [-i] [--temp-dir TEMP_DIR] [--video-codec VIDEO_CODEC] [--audio-codec AUDIO_CODEC] [--audio-bitrate AUDIO_BITRATE] [--audio-channels AUDIO_CHANNELS] directory
+Usage: convert-videos [OPTIONS] DIRECTORY
 
-positional arguments:
-  directory             The directory to read files from
+Options:
+  -i, --in-place            Replace the original files instead of appending
+                            the new codec name
+  -f, --force               Force conversion even if the format of the file
+                            already matches the desired format
+  --video-codec TEXT        A target video codec  [default: HEVC]
+  -q, --quality INTEGER     The quantizer quality level to use  [default: 22]
+  -p, --preset TEXT         FFmpeg preset to use  [default: medium]
+  -w, --width INTEGER       Specify a new width to enable resizing of the
+                            video
+  -e, --extra-args TEXT     Specify any extra arguments you would like to pass
+                            to FFMpeg here
+  --audio-codec TEXT        A target audio codec  [default: AAC]
+  --audio-channels INTEGER  The number of channels to mux sound in to
+                            [default: 2]
+  --audio-bitrate INTEGER   The bitrate to use for the audio codec  [default:
+                            160]
+  --temp-dir TEXT           Specify a temporary directory to use during
+                            conversions instead of the system default
+  -v, --verbose             Enable verbose log output
+  --container TEXT          Specify a video container to convert the videos in
+                            to  [default: mkv]
+  -h, --help                Show this message and exit.
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -v, --verbose         Print more verbose messages (default: False)
-  -f, --force           Force to run even if the specified videos are already in the expected format (default: False)
-  -w WIDTH, --width WIDTH
-                        Set the width if you would like to resize the video (default: None)
-  -q QUALITY, --quality QUALITY
-                        Quality quantizer (default: 22)
-  -p PRESET, --preset PRESET
-                        Encoding preset to use (default: medium)
-  -e EXTRA_ARGS, --extra-args EXTRA_ARGS
-                        Any extra arguments to pass to ffmpeg (default: )
-  -c CONTAINER, --container CONTAINER
-                        The container format to output in (default: mkv)
-  -i, --in-place        Replace files in-place instead of appending ' x265' to the end (default: False)
-  --temp-dir TEMP_DIR   The temp dir to store files in during conversion (default: /var/folders/w0/2mq4qtgs4_sd22tlblwzs2f9h0_kwk/T)
-  --video-codec VIDEO_CODEC
-                        The video codec to use for encoding (default: libx265)
-  --audio-codec AUDIO_CODEC
-                        The audio codec to use for encoding (default: aac)
-  --audio-bitrate AUDIO_BITRATE
-                        The bitrate of the audio codec (default: 160k)
-  --audio-channels AUDIO_CHANNELS
-                        The number of audio channels to use (default: 2)
 ```
