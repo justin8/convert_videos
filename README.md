@@ -1,6 +1,8 @@
 # Convert Videos
 
 ![Test Status](https://github.com/justin8/convert_videos/workflows/Tests/badge.svg?branch=master)
+[![codecov](https://codecov.io/gh/justin8/convert_videos/branch/master/graph/badge.svg)](https://codecov.io/gh/justin8/convert_videos)
+
 
 This tool allows bulk conversion of videos using ffmpeg
 
