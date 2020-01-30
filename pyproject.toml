@@ -10,7 +10,7 @@ convert-videos = "convert_videos.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.6"
-colorama = "^0.4.3"
+colorama = "^0.4.0"
 ffmpy = "^0.2.2"
 video_utils = "^2.0.4"
 click = "^7.0"
