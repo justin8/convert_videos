@@ -3,7 +3,17 @@
 ![Test Status](https://github.com/justin8/convert_videos/workflows/Tests/badge.svg?branch=master)
 [![codecov](https://codecov.io/gh/justin8/convert_videos/branch/master/graph/badge.svg)](https://codecov.io/gh/justin8/convert_videos)
 
-This tool allows bulk conversion of videos using ffmpeg
+This tool allows bulk conversion of videos using ffmpeg.
+
+By default it will append the codec name to the file, e.g. `Best Movie Ever.avi` -> `Best Movie Ever - x265.mkv`. This can be optionally overridden.
+
+Videos are only converted if they do not already match the desired codec, allowing you to process a folder of mixed format files and only convert the ones you desire. This can optionally be overridden.
+
+Videos can also be resized automatically by providing a width. Height is automatically calculated to ensure that the aspect ratio is maintained.
+
+Default settings:
+Audio: 160bps 2 channel AAC
+Video: HEVC/x265 at quality of 22
 
 ## Usage
 
