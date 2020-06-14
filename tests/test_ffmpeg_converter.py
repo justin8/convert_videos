@@ -45,13 +45,13 @@ def test_process(mock_ffmpy, mock_settings, target):
 
 def test_generate_ffmpeg_output_settings(target):
     result = target._generate_ffmpeg_settings("output")
-    assert result == "-y -threads 0 -vcodec libx265 -crf 25 -preset slow -strict -2 -acodec aac -ab 120k -ac 2 "
+    assert result == "-y -threads 0 -map 0:v:0 -map 0:s -c:s copy -vcodec libx265 -preset slow -crf 25 -strict -2 -acodec aac -ab 120k -ac 2 -map 0:a "
 
 
 def test_extra_output_args(target):
     target.extra_ffmpeg_output_args = "-foo"
     result = target._generate_ffmpeg_settings("output")
-    assert result == "-y -threads 0 -vcodec libx265 -crf 25 -preset slow -strict -2 -acodec aac -ab 120k -ac 2 -foo"
+    assert result == "-y -threads 0 -map 0:v:0 -map 0:s -c:s copy -vcodec libx265 -preset slow -crf 25 -strict -2 -acodec aac -ab 120k -ac 2 -map 0:a -foo"
 
 
 def test_generate_ffmpeg_input_settings(target):

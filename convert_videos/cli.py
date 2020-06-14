@@ -28,7 +28,7 @@ def set_log_level(verbose):
 @click.option("--video-codec", default="HEVC", show_default=True,
               help="A target video codec. Supported codecs: HEVC, AVC")
 @click.option("--quality", "-q", type=int, default=22, show_default=True, help="The quantizer quality level to use")
-@click.option("--preset", "-p", default="fast", show_default=True, help="FFmpeg preset to use.")
+@click.option("--preset", "-p", default="medium", show_default=True, help="FFmpeg preset to use.")
 @click.option("--width", "-w", type=int, help="Specify a new width to enable resizing of the video")
 @click.option("--extra-input-args", default="",
               help="Specify any extra arguments you would like to pass to FFMpeg input here")
