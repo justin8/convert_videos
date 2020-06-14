@@ -26,9 +26,9 @@ def set_log_level(verbose):
     "--force", "-f", is_flag=True,
     help="Force conversion even if the format of the file already matches the desired format")
 @click.option("--video-codec", default="HEVC", show_default=True,
-              help="A target video codec. Supported codecs: HEVC, HEVC_NVENC, AVC")
+              help="A target video codec. Supported codecs: HEVC, AVC")
 @click.option("--quality", "-q", type=int, default=22, show_default=True, help="The quantizer quality level to use")
-@click.option("--preset", "-p", default="faster", show_default=True, help="FFmpeg preset to use")
+@click.option("--preset", "-p", default="fast", show_default=True, help="FFmpeg preset to use.")
 @click.option("--width", "-w", type=int, help="Specify a new width to enable resizing of the video")
 @click.option("--extra-input-args", default="",
               help="Specify any extra arguments you would like to pass to FFMpeg input here")
@@ -44,17 +44,23 @@ def set_log_level(verbose):
 @click.option("--container", default="mkv", show_default=True,
               help="Specify a video container to convert the videos in to")
 @click.option("--dry-run", is_flag=True, help="Do not make actual changes")
+@click.option("--nvidia-hw-accel", is_flag=True, help="Use Nvidia HW acceleration instead of software encoding")
 def main(directory, force, in_place, video_codec,  quality, preset,
          width, extra_input_args, extra_output_args, audio_codec, audio_channels,
-         audio_bitrate, temp_dir, verbose, container, dry_run):
+         audio_bitrate, temp_dir, verbose, container, dry_run, nvidia_hw_accel):
 
     set_log_level(verbose)
+
+    hw_accel = None
+    if nvidia_hw_accel:
+        hw_accel = "nvidia"
 
     video_settings = VideoSettings(
         codec=Codec(video_codec),
         quality=quality,
         preset=preset,
         width=width,
+        hw_accel=hw_accel
     )
     audio_settings = AudioSettings(
         codec=Codec(audio_codec),

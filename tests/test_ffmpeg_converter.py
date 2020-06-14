@@ -19,7 +19,8 @@ def target():
     video_settings = VideoSettings(
         codec=Codec("HEVC"),
         quality=25,
-        preset="slow"
+        preset="slow",
+        hw_accel=None
     )
 
     return FFmpegConverter(
@@ -44,13 +45,13 @@ def test_process(mock_ffmpy, mock_settings, target):
 
 def test_generate_ffmpeg_output_settings(target):
     result = target._generate_ffmpeg_settings("output")
-    assert result == "-y -threads 0 -vcodec libx265 -crf 25 -preset slow -strict -2 -acodec aac -ab 120 -ac 2 "
+    assert result == "-y -threads 0 -vcodec libx265 -crf 25 -preset slow -strict -2 -acodec aac -ab 120k -ac 2 "
 
 
 def test_extra_output_args(target):
     target.extra_ffmpeg_output_args = "-foo"
     result = target._generate_ffmpeg_settings("output")
-    assert result == "-y -threads 0 -vcodec libx265 -crf 25 -preset slow -strict -2 -acodec aac -ab 120 -ac 2 -foo"
+    assert result == "-y -threads 0 -vcodec libx265 -crf 25 -preset slow -strict -2 -acodec aac -ab 120k -ac 2 -foo"
 
 
 def test_generate_ffmpeg_input_settings(target):

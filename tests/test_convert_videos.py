@@ -17,7 +17,8 @@ def target():
     video_settings = VideoSettings(
         codec=Codec("HEVC"),
         quality=25,
-        preset="slow"
+        preset="slow",
+        hw_accel=None,
     )
 
     return Processor(
