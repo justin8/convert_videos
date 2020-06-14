@@ -14,7 +14,8 @@ log = logging.getLogger(__name__)
 class FFmpegConverter:
     source_file_path: str
     destination_file_path: str
-    extra_ffmpeg_args: str
+    extra_ffmpeg_input_args: str
+    extra_ffmpeg_output_args: str
     dry_run: bool
     video_settings: VideoSettings
     audio_settings: AudioSettings
@@ -23,10 +24,11 @@ class FFmpegConverter:
         self._validate_destination()
 
     def process(self):
-        output_settings = self._generate_ffmpeg_settings()
+        input_settings = self._generate_ffmpeg_settings("input")
+        output_settings = self._generate_ffmpeg_settings("output")
 
         ff = ffmpy.FFmpeg(
-            inputs={self.source_file_path: None},
+            inputs={self.source_file_path: input_settings},
             outputs={self.destination_file_path: output_settings})
         if self.dry_run:
             print(f"DRY-RUN: Would start conversion. Command: '{ff.cmd}'")
@@ -34,13 +36,16 @@ class FFmpegConverter:
             log.info(f"Starting conversion. Command: '{ff.cmd}'")
             ff.run()
 
-    def _generate_ffmpeg_settings(self):
+    def _generate_ffmpeg_settings(self, mode):
+        if mode == "input":
+            return self.extra_ffmpeg_input_args
+
         output_settings = "" + \
             "-y" + \
             " -threads 0" + \
             str(self.video_settings) + \
             str(self.audio_settings) + \
-            " " + self.extra_ffmpeg_args
+            " " + self.extra_ffmpeg_output_args
         return output_settings
 
     def _validate_destination(self):

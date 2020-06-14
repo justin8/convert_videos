@@ -51,7 +51,8 @@ def test_process(mock_create_temp_file, mock_move_output_video, mock_ffmpeg_conv
     mock_ffmpeg_converter.assert_called_with(
         audio_settings=target.audio_settings,
         video_settings=target.video_settings,
-        extra_ffmpeg_args="",
+        extra_ffmpeg_input_args="",
+        extra_ffmpeg_output_args="",
         destination_file_path="/foo",
         source_file_path="/asdf/foo/bar.mkv",
         dry_run=False,
@@ -69,7 +70,8 @@ def test_process_dry_run(mock_create_temp_file, mock_move_output_video, mock_ffm
     mock_ffmpeg_converter.assert_called_with(
         audio_settings=target.audio_settings,
         video_settings=target.video_settings,
-        extra_ffmpeg_args="",
+        extra_ffmpeg_input_args="",
+        extra_ffmpeg_output_args="",
         destination_file_path="/foo",
         source_file_path="/asdf/foo/bar.mkv",
         dry_run=True,

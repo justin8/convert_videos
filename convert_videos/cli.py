@@ -25,11 +25,15 @@ def set_log_level(verbose):
 @click.option(
     "--force", "-f", is_flag=True,
     help="Force conversion even if the format of the file already matches the desired format")
-@click.option("--video-codec", default="HEVC", show_default=True, help="A target video codec")
+@click.option("--video-codec", default="HEVC", show_default=True,
+              help="A target video codec. Supported codecs: HEVC, HEVC_NVENC, AVC")
 @click.option("--quality", "-q", type=int, default=22, show_default=True, help="The quantizer quality level to use")
 @click.option("--preset", "-p", default="faster", show_default=True, help="FFmpeg preset to use")
 @click.option("--width", "-w", type=int, help="Specify a new width to enable resizing of the video")
-@click.option("--extra-args", "-e", default="", help="Specify any extra arguments you would like to pass to FFMpeg here")
+@click.option("--extra-input-args", default="",
+              help="Specify any extra arguments you would like to pass to FFMpeg input here")
+@click.option("--extra-output-args", default="",
+              help="Specify any extra arguments you would like to pass to FFMpeg output here")
 @click.option("--audio-codec", default="AAC", show_default=True, help="A target audio codec")
 @click.option("--audio-channels", default=2, show_default=True, type=int,
               help="The number of channels to mux sound in to")
@@ -41,7 +45,7 @@ def set_log_level(verbose):
               help="Specify a video container to convert the videos in to")
 @click.option("--dry-run", is_flag=True, help="Do not make actual changes")
 def main(directory, force, in_place, video_codec,  quality, preset,
-         width, extra_args, audio_codec, audio_channels,
+         width, extra_input_args, extra_output_args, audio_codec, audio_channels,
          audio_bitrate, temp_dir, verbose, container, dry_run):
 
     set_log_level(verbose)
@@ -58,13 +62,20 @@ def main(directory, force, in_place, video_codec,  quality, preset,
         bitrate=audio_bitrate,
     )
 
+    if video_codec.Codec.ffmpeg_name is None:
+        raise Exception("Invalid video codec specified")
+
+    if audio_codec.Codec.ffmpeg_name is None:
+        raise Exception("Invalid audio codec specified")
+
     Processor(
         directory=directory,
         force=force,
         video_settings=video_settings,
         audio_settings=audio_settings,
         in_place=in_place,
-        extra_ffmpeg_args=extra_args,
+        extra_ffmpeg_input_args=extra_input_args,
+        extra_ffmpeg_output_args=extra_output_args,
         temp_directory=temp_dir,
         container=container,
         dry_run=dry_run,

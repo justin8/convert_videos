@@ -20,7 +20,8 @@ class VideoProcessor:
     container: str
     dry_run: bool = False
     in_place: bool = False
-    extra_ffmpeg_args: str = ""
+    extra_ffmpeg_input_args: str = ""
+    extra_ffmpeg_output_args: str = ""
     temp_directory: str = None
 
     # def __post__init__(self):
@@ -37,7 +38,8 @@ class VideoProcessor:
         converter = FFmpegConverter(
             source_file_path=self.video.full_path,
             destination_file_path=self.temp_file,
-            extra_ffmpeg_args=self.extra_ffmpeg_args,
+            extra_ffmpeg_input_args=self.extra_ffmpeg_input_args,
+            extra_ffmpeg_output_args=self.extra_ffmpeg_output_args,
             video_settings=self.video_settings,
             audio_settings=self.audio_settings,
             dry_run=self.dry_run,

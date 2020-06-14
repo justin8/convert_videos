@@ -27,7 +27,8 @@ def target():
         video_settings=video_settings,
         audio_settings=audio_settings,
         destination_file_path="/asdf/temp/path.mkv",
-        extra_ffmpeg_args="",
+        extra_ffmpeg_input_args="",
+        extra_ffmpeg_output_args="",
         dry_run=False
     )
 
@@ -37,19 +38,30 @@ def target():
 def test_process(mock_ffmpy, mock_settings, target):
     target.process()
     mock_ffmpy.FFmpeg.assert_called_with(
-        inputs={"/asdf/foo/bar.mkv": None}, outputs={'/asdf/temp/path.mkv': '12345'})
+        inputs={"/asdf/foo/bar.mkv": '12345'}, outputs={'/asdf/temp/path.mkv': '12345'})
     mock_ffmpy.FFmpeg().run.assert_called()
 
 
-def test_generate_ffmpeg_settings(target):
-    result = target._generate_ffmpeg_settings()
+def test_generate_ffmpeg_output_settings(target):
+    result = target._generate_ffmpeg_settings("output")
     assert result == "-y -threads 0 -vcodec libx265 -crf 25 -preset slow -strict -2 -acodec aac -ab 120 -ac 2 "
 
 
-def test_extra_args(target):
-    target.extra_ffmpeg_args = "-hwaccel cuvid"
-    result = target._generate_ffmpeg_settings()
-    assert result == "-y -threads 0 -vcodec libx265 -crf 25 -preset slow -strict -2 -acodec aac -ab 120 -ac 2 -hwaccel cuvid"
+def test_extra_output_args(target):
+    target.extra_ffmpeg_output_args = "-foo"
+    result = target._generate_ffmpeg_settings("output")
+    assert result == "-y -threads 0 -vcodec libx265 -crf 25 -preset slow -strict -2 -acodec aac -ab 120 -ac 2 -foo"
+
+
+def test_generate_ffmpeg_input_settings(target):
+    result = target._generate_ffmpeg_settings("input")
+    assert result == ""
+
+
+def test_extra_input_args(target):
+    target.extra_ffmpeg_input_args = "-foo"
+    result = target._generate_ffmpeg_settings("input")
+    assert result == "-foo"
 
 
 @patch("os.path.exists", return_value=True)

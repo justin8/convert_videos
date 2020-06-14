@@ -15,7 +15,8 @@ class Processor:
     audio_settings: AudioSettings
     dry_run: bool = False
     in_place: bool = False
-    extra_ffmpeg_args: str = ""
+    extra_ffmpeg_input_args: str = ""
+    extra_ffmpeg_output_args: str = ""
     temp_directory: str = None
     container: str = "mkv"
 
@@ -73,7 +74,8 @@ class Processor:
             video_settings=self.video_settings,
             audio_settings=self.audio_settings,
             container=self.container,
-            extra_ffmpeg_args=self.extra_ffmpeg_args,
+            extra_ffmpeg_input_args=self.extra_ffmpeg_input_args,
+            extra_ffmpeg_output_args=self.extra_ffmpeg_output_args,
             temp_directory=self.temp_directory,
             in_place=self.in_place,
             dry_run=self.dry_run,
