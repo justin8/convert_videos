@@ -12,7 +12,7 @@ class AudioSettings:
     def __str__(self):
         output = ""
         output += f" -acodec {self.codec.ffmpeg_name}"
-        output += f" -ab {self.bitrate}"
+        output += f" -ab {self.bitrate}k"
         output += f" -ac {self.channels}"
         return output
 
