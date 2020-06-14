@@ -40,7 +40,7 @@ class FFmpegConverter:
             " -threads 0" + \
             str(self.video_settings) + \
             str(self.audio_settings) + \
-            self.extra_ffmpeg_args
+            " " + self.extra_ffmpeg_args
         return output_settings
 
     def _validate_destination(self):

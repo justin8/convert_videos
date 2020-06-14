@@ -43,7 +43,13 @@ def test_process(mock_ffmpy, mock_settings, target):
 
 def test_generate_ffmpeg_settings(target):
     result = target._generate_ffmpeg_settings()
-    assert result == "-y -threads 0 -vcodec libx265 -crf 25 -preset slow -strict -2 -acodec aac -ab 120 -ac 2"
+    assert result == "-y -threads 0 -vcodec libx265 -crf 25 -preset slow -strict -2 -acodec aac -ab 120 -ac 2 "
+
+
+def test_extra_args(target):
+    target.extra_ffmpeg_args = "-hwaccel cuvid"
+    result = target._generate_ffmpeg_settings()
+    assert result == "-y -threads 0 -vcodec libx265 -crf 25 -preset slow -strict -2 -acodec aac -ab 120 -ac 2 -hwaccel cuvid"
 
 
 @patch("os.path.exists", return_value=True)
