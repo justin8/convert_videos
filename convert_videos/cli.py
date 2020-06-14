@@ -68,10 +68,10 @@ def main(directory, force, in_place, video_codec,  quality, preset,
         bitrate=audio_bitrate,
     )
 
-    if video_codec.Codec.ffmpeg_name is None:
+    if video_settings.codec.ffmpeg_name is None:
         raise Exception("Invalid video codec specified")
 
-    if audio_codec.Codec.ffmpeg_name is None:
+    if audio_settings.codec.ffmpeg_name is None:
         raise Exception("Invalid audio codec specified")
 
     Processor(

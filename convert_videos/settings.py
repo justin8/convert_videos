@@ -30,9 +30,6 @@ class VideoSettings:
         if self.codec.ffmpeg_name == "copy":
             return output
 
-        if self.hw_accel == "nvidia":
-            output += " -hwaccel cuvid"
-
         output += f" -crf {self.quality}"
         output += f" -preset {self.preset}"
 

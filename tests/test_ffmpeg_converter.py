@@ -56,13 +56,19 @@ def test_extra_output_args(target):
 
 def test_generate_ffmpeg_input_settings(target):
     result = target._generate_ffmpeg_settings("input")
-    assert result == ""
+    assert result == " "
+
+
+def test_generate_ffmpeg_input_settings_nvidia_hw(target):
+    target.video_settings.hw_accel = "nvidia"
+    result = target._generate_ffmpeg_settings("input")
+    assert result == " -hwaccel cuvid"
 
 
 def test_extra_input_args(target):
     target.extra_ffmpeg_input_args = "-foo"
     result = target._generate_ffmpeg_settings("input")
-    assert result == "-foo"
+    assert result == " -foo"
 
 
 @patch("os.path.exists", return_value=True)

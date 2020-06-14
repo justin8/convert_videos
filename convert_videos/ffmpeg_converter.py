@@ -38,15 +38,18 @@ class FFmpegConverter:
 
     def _generate_ffmpeg_settings(self, mode):
         if mode == "input":
-            return self.extra_ffmpeg_input_args
+            output = " " + self.extra_ffmpeg_input_args
+            if self.video_settings.hw_accel == "nvidia":
+                output = " -hwaccel cuvid"
+            return output
 
-        output_settings = "" + \
+        output = "" + \
             "-y" + \
             " -threads 0" + \
             str(self.video_settings) + \
             str(self.audio_settings) + \
             " " + self.extra_ffmpeg_output_args
-        return output_settings
+        return output
 
     def _validate_destination(self):
         if os.path.exists(self.destination_file_path):
