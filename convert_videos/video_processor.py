@@ -18,6 +18,7 @@ class VideoProcessor:
     video_settings: VideoSettings
     audio_settings: AudioSettings
     container: str
+    dry_run: bool = False
     in_place: bool = False
     extra_ffmpeg_args: str = ""
     temp_directory: str = None
@@ -38,7 +39,8 @@ class VideoProcessor:
             destination_file_path=self.temp_file,
             extra_ffmpeg_args=self.extra_ffmpeg_args,
             video_settings=self.video_settings,
-            audio_settings=self.audio_settings
+            audio_settings=self.audio_settings,
+            dry_run=self.dry_run,
         )
         converter.process()
         self._move_output_video()
@@ -69,8 +71,12 @@ class VideoProcessor:
         return f"{split_filename[0]}.{self.container}"
 
     def _move_output_video(self):
-        shutil.move(self.temp_file, self.renamed_path())
+        if not self.dry_run:
+            shutil.move(self.temp_file, self.renamed_path())
         if self.in_place:
+            if self.dry_run:
+                print(f"DRY-RUN: Would replace original file {self.video.full_path}")
+                return
             print(f"Replacing original file {self.video.full_path}")
             os.remove(self.video.full_path)
             shutil.move(self.renamed_path(), self.in_place_file_path())

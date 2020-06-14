@@ -13,6 +13,7 @@ class Processor:
     force: bool
     video_settings: VideoSettings
     audio_settings: AudioSettings
+    dry_run: bool = False
     in_place: bool = False
     extra_ffmpeg_args: str = ""
     temp_directory: str = None
@@ -74,5 +75,6 @@ class Processor:
             container=self.container,
             extra_ffmpeg_args=self.extra_ffmpeg_args,
             temp_directory=self.temp_directory,
-            in_place=self.in_place
+            in_place=self.in_place,
+            dry_run=self.dry_run,
         )

@@ -20,22 +20,29 @@ def set_log_level(verbose):
 @click.argument("directory",
                 type=click.Path(exists=True),
                 required=True)
-@click.option("--in-place", "-i", is_flag=True, help="Replace the original files instead of appending the new codec name")
-@click.option("--force", "-f", is_flag=True, help="Force conversion even if the format of the file already matches the desired format")
+@click.option("--in-place", "-i", is_flag=True,
+              help="Replace the original files instead of appending the new codec name")
+@click.option(
+    "--force", "-f", is_flag=True,
+    help="Force conversion even if the format of the file already matches the desired format")
 @click.option("--video-codec", default="HEVC", show_default=True, help="A target video codec")
 @click.option("--quality", "-q", type=int, default=22, show_default=True, help="The quantizer quality level to use")
 @click.option("--preset", "-p", default="medium", show_default=True, help="FFmpeg preset to use")
 @click.option("--width", "-w", type=int, help="Specify a new width to enable resizing of the video")
 @click.option("--extra-args", "-e", default="", help="Specify any extra arguments you would like to pass to FFMpeg here")
 @click.option("--audio-codec", default="AAC", show_default=True, help="A target audio codec")
-@click.option("--audio-channels", default=2, show_default=True, type=int, help="The number of channels to mux sound in to")
-@click.option("--audio-bitrate", default=160, show_default=True, type=int, help="The bitrate to use for the audio codec")
+@click.option("--audio-channels", default=2, show_default=True, type=int,
+              help="The number of channels to mux sound in to")
+@click.option("--audio-bitrate", default=160, show_default=True, type=int,
+              help="The bitrate to use for the audio codec")
 @click.option("--temp-dir", help="Specify a temporary directory to use during conversions instead of the system default")
 @click.option("--verbose", "-v", is_flag=True, help="Enable verbose log output")
-@click.option("--container", default="mkv", show_default=True, help="Specify a video container to convert the videos in to")
+@click.option("--container", default="mkv", show_default=True,
+              help="Specify a video container to convert the videos in to")
+@click.option("--dry-run", is_flag=True, help="Do not make actual changes")
 def main(directory, force, in_place, video_codec,  quality, preset,
          width, extra_args, audio_codec, audio_channels,
-         audio_bitrate, temp_dir, verbose, container):
+         audio_bitrate, temp_dir, verbose, container, dry_run):
 
     set_log_level(verbose)
 
@@ -60,4 +67,5 @@ def main(directory, force, in_place, video_codec,  quality, preset,
         extra_ffmpeg_args=extra_args,
         temp_directory=temp_dir,
         container=container,
+        dry_run=dry_run,
     ).start()

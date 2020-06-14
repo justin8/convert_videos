@@ -1,7 +1,7 @@
 from mock import patch, mock_open
 import pytest
 
-from video_utils import Codec, Video
+from video_utils import Codec
 from convert_videos.settings import AudioSettings, VideoSettings
 
 from convert_videos.ffmpeg_converter import FFmpegConverter
@@ -28,6 +28,7 @@ def target():
         audio_settings=audio_settings,
         destination_file_path="/asdf/temp/path.mkv",
         extra_ffmpeg_args="",
+        dry_run=False
     )
 
 
