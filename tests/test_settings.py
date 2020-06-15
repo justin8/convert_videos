@@ -16,7 +16,7 @@ def test_video_settings_avc():
 def test_video_settings_avc_nvidia():
     target = VideoSettings(Codec("AVC"), 25, "slow", hw_accel="nvidia")
     assert str(
-        target) == " -map 0:v:0 -map 0:s -c:s copy -vcodec h264_nvenc -preset slow -cq 25"
+        target) == " -map 0:v:0 -map 0:s -c:s copy -vcodec h264_nvenc -preset slow -rc constqp -qp 25 -b:v 0"
 
 
 def test_video_settings_hevc():
@@ -28,7 +28,7 @@ def test_video_settings_hevc():
 def test_video_settings_hevc_nvidia():
     target = VideoSettings(Codec("HEVC"), 25, "slow", hw_accel="nvidia")
     assert str(
-        target) == " -map 0:v:0 -map 0:s -c:s copy -vcodec hevc_nvenc -preset slow -cq 25 -strict -2"
+        target) == " -map 0:v:0 -map 0:s -c:s copy -vcodec hevc_nvenc -preset slow -rc constqp -qp 25 -b:v 0 -strict -2"
 
 
 def test_video_settings_width():
