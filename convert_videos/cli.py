@@ -27,7 +27,7 @@ def set_log_level(verbose):
     help="Force conversion even if the format of the file already matches the desired format")
 @click.option("--video-codec", default="HEVC", show_default=True,
               help="A target video codec. Supported codecs: HEVC, AVC")
-@click.option("--quality", "-q", type=int, default=22, show_default=True, help="The quantizer quality level to use")
+@click.option("--quality", "-q", type=int, default=23, show_default=True, help="The quantizer quality level to use")
 @click.option("--preset", "-p", default="medium", show_default=True, help="FFmpeg preset to use.")
 @click.option("--width", "-w", type=int, help="Specify a new width to enable resizing of the video")
 @click.option("--extra-input-args", default="",
