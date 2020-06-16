@@ -8,18 +8,9 @@ from mock import patch
 
 @pytest.fixture
 def target():
-    audio_settings = AudioSettings(
-        codec=Codec("AAC"),
-        channels=2,
-        bitrate=120
-    )
+    audio_settings = AudioSettings(codec=Codec("AAC"), channels=2, bitrate=120)
 
-    video_settings = VideoSettings(
-        codec=Codec("HEVC"),
-        quality=25,
-        preset="slow",
-        hw_accel=None,
-    )
+    video_settings = VideoSettings(codec=Codec("HEVC"), quality=25, preset="slow", hw_accel=None,)
 
     return VideoProcessor(
         video=Video("bar.mkv", "/asdf/foo"),
@@ -27,7 +18,7 @@ def target():
         audio_settings=audio_settings,
         container="asdf",
         in_place=False,
-        dry_run=False
+        dry_run=False,
     )
 
 
@@ -56,7 +47,7 @@ def test_process(mock_create_temp_file, mock_move_output_video, mock_ffmpeg_conv
         extra_ffmpeg_output_args="",
         destination_file_path="/foo",
         source_file_path="/asdf/foo/bar.mkv",
-        dry_run=False
+        dry_run=False,
     )
     mock_ffmpeg_converter().process.assert_called()
     mock_move_output_video.assert_called()
@@ -118,7 +109,7 @@ def test_in_place_file_path(target):
 def test_move_output_video(mock_remove, mock_move, target):
     target.temp_file = "/foo/bar/baz"
     target._move_output_video()
-    mock_move.assert_called_with('/foo/bar/baz', '/asdf/foo/bar - x265.asdf')
+    mock_move.assert_called_with("/foo/bar/baz", "/asdf/foo/bar - x265.asdf")
     mock_remove.assert_not_called()
 
 
@@ -140,8 +131,7 @@ def test_move_output_video_in_place(mock_remove, mock_move, target):
     target._move_output_video()
     mock_move.assert_any_call("/foo/bar/baz", "/asdf/foo/bar - x265.asdf")
     mock_remove.assert_called_with("/asdf/foo/bar.mkv")
-    mock_move.assert_any_call(
-        "/asdf/foo/bar - x265.asdf", "/asdf/foo/bar.asdf")
+    mock_move.assert_any_call("/asdf/foo/bar - x265.asdf", "/asdf/foo/bar.asdf")
 
 
 @patch("shutil.move")

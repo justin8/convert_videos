@@ -88,15 +88,13 @@ class VideoProcessor:
     def already_processed(self):
         renamed_path = self.renamed_path()
         if os.path.exists(renamed_path):
-            print(
-                f"File {self.video.name} appears to have already been converted to {renamed_path} exists. Skipping")
+            print(f"File {self.video.name} appears to have already been converted to {renamed_path} exists. Skipping")
             return True
 
         split_filename = os.path.splitext(self.video.name)
         codec_name = self.video_settings.codec.pretty_name
         if split_filename[0].endswith(codec_name):
-            print(
-                f"File {self.video.name} already matches the renaming format. Skipping")
+            print(f"File {self.video.name} already matches the renaming format. Skipping")
             return True
 
         return False

@@ -28,10 +28,5 @@ def test_video_settings_hevc_nvidia():
 
 
 def test_video_settings_width():
-    target = VideoSettings(
-        codec=Codec("AVC"),
-        quality=25,
-        preset="slow",
-        width=720,
-        hw_accel=None)
+    target = VideoSettings(codec=Codec("AVC"), quality=25, preset="slow", width=720, hw_accel=None)
     assert str(target) == " -map 0:v:0 -map 0:s? -c:s copy -vcodec h264 -preset slow -crf 25 -vf scale=720:-2"
