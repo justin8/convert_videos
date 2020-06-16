@@ -35,6 +35,7 @@ class FFmpegConverter:
         else:
             log.info(f"Starting conversion. Command: '{ff.cmd}'")
             ff.run()
+            log.info(f"Successfully finished conversion!")
 
     def _generate_ffmpeg_settings(self, mode):
         if mode == "input":

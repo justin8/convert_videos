@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from prettytable import PrettyTable
 
 from video_utils import FileMap
 
@@ -25,6 +24,7 @@ class Processor:
     def start(self):
         self._load_file_map()
         self._convert_all()
+        return self.results
 
     def _load_file_map(self):
         self._file_map = FileMap(self.directory)
@@ -36,14 +36,7 @@ class Processor:
             print(f"Working in directory {directory}")
             self.results += self._convert_files_in_directory(directory)
         print(f"Finished converting all videos!")
-
-        self._print_conversion_results()
-
-    def _print_conversion_results(self):
-        table = PrettyTable(["Video", "Status"])
-        for result in self.results:
-            table.add_row([result["video"].name, result["status"]])
-        print(table)
+        return self.results
 
     def _convert_files_in_directory(self, directory):
         videos_processed = []

@@ -1,6 +1,7 @@
 import click
 import logging
 
+from prettytable import PrettyTable
 from video_utils import Codec
 
 from .processor import Processor, AudioSettings, VideoSettings
@@ -17,7 +18,8 @@ def set_log_level(verbose):
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)
-@click.argument("directory",
+@click.argument("directories",
+                nargs=-1,
                 type=click.Path(exists=True),
                 required=True)
 @click.option("--in-place", "-i", is_flag=True,
@@ -45,7 +47,7 @@ def set_log_level(verbose):
               help="Specify a video container to convert the videos in to")
 @click.option("--dry-run", is_flag=True, help="Do not make actual changes")
 @click.option("--nvidia-hw-accel", is_flag=True, help="Use Nvidia HW acceleration instead of software encoding")
-def main(directory, force, in_place, video_codec,  quality, preset,
+def main(directories, force, in_place, video_codec,  quality, preset,
          width, extra_input_args, extra_output_args, audio_codec, audio_channels,
          audio_bitrate, temp_dir, verbose, container, dry_run, nvidia_hw_accel):
 
@@ -74,15 +76,27 @@ def main(directory, force, in_place, video_codec,  quality, preset,
     if audio_settings.codec.ffmpeg_name is None:
         raise Exception("Invalid audio codec specified")
 
-    Processor(
-        directory=directory,
-        force=force,
-        video_settings=video_settings,
-        audio_settings=audio_settings,
-        in_place=in_place,
-        extra_ffmpeg_input_args=extra_input_args,
-        extra_ffmpeg_output_args=extra_output_args,
-        temp_directory=temp_dir,
-        container=container,
-        dry_run=dry_run,
-    ).start()
+    results = []
+    for directory in directories:
+        results += Processor(
+            directory=directory,
+            force=force,
+            video_settings=video_settings,
+            audio_settings=audio_settings,
+            in_place=in_place,
+            extra_ffmpeg_input_args=extra_input_args,
+            extra_ffmpeg_output_args=extra_output_args,
+            temp_directory=temp_dir,
+            container=container,
+            dry_run=dry_run,
+        ).start()
+
+    _print_conversion_results(results)
+
+
+def _print_conversion_results(results):
+    table = PrettyTable(["Video", "Status"])
+
+    for result in results:
+        table.add_row([result["video"].full_path, result["status"]])
+    print(table)

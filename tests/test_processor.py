@@ -44,9 +44,11 @@ def file_map_fixture():
 @patch.object(Processor, "_load_file_map", autospec=True)
 @patch.object(Processor, "_convert_all", autospec=True)
 def test_processor_start(mock_convert_all, mock_load_file_map, target):
-    target.start()
+    target.results = "foo"
+    result = target.start()
     mock_convert_all.assert_called()
     mock_load_file_map.assert_called()
+    assert result == "foo"
 
 
 @patch.object(processor, "FileMap")
@@ -63,7 +65,7 @@ def test_get_video_processor(mock_video_processor, target):
     assert isinstance(result, NonCallableMagicMock)
 
 
-@patch.object(Processor, "_convert_files_in_directory")
+@patch.object(Processor, "_convert_files_in_directory", return_value=["some-response"])
 def test_convert_all(mock_convert_files_in_directory, target, file_map_fixture):
     target._file_map = file_map_fixture
     target._convert_all()
@@ -72,6 +74,9 @@ def test_convert_all(mock_convert_files_in_directory, target, file_map_fixture):
         "/Users/jdray/git/home/convert_videos/tests/testData/foo")
     mock_convert_files_in_directory.assert_any_call(
         "/Users/jdray/git/home/convert_videos/tests/testData/bar")
+
+    # Confirm we return the results from convert_files_in_directory in a list
+    assert target.results == ["some-response", "some-response"]
 
 
 @patch.object(Processor, "_get_video_processor")
