@@ -334,7 +334,7 @@ description = "This library is used for lots of shared functionality around pars
 name = "video-utils"
 optional = false
 python-versions = ">=3.6,<4.0"
-version = "2.0.9"
+version = "2.0.12"
 
 [package.dependencies]
 colorama = ">=0.4.0,<0.5.0"
@@ -557,8 +557,8 @@ typed-ast = [
     {file = "typed_ast-1.4.1.tar.gz", hash = "sha256:8c8aaad94455178e3187ab22c8b01a3837f8ee50e09cf31f1ba129eb293ec30b"},
 ]
 video-utils = [
-    {file = "video_utils-2.0.9-py3-none-any.whl", hash = "sha256:e04351dd903dae680baf45b2722901f347cebfb3913376f728b3ed7f32f02df3"},
-    {file = "video_utils-2.0.9.tar.gz", hash = "sha256:7db94a6a4ab630bfbf925ae838948dc2ea2ad7fa5ba9dcc1830a57cd39dc0cfa"},
+    {file = "video_utils-2.0.12-py3-none-any.whl", hash = "sha256:cc5e089830d531529babc811adf204419894c1de6e36822db2e3f6db6864fd99"},
+    {file = "video_utils-2.0.12.tar.gz", hash = "sha256:cb74751d58779b242f1c6714d3519eab30db16b4f63605b8bce000f23482a396"},
 ]
 wcwidth = [
     {file = "wcwidth-0.2.4-py2.py3-none-any.whl", hash = "sha256:79375666b9954d4a1a10739315816324c3e73110af9d0e102d906fdb0aec009f"},

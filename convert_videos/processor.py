@@ -1,11 +1,12 @@
 from dataclasses import dataclass
+import logging
 
 from video_utils import FileMap
 
 from .video_processor import VideoProcessor
 from .settings import VideoSettings, AudioSettings
 
-# TODO: Use logging module everywhere
+log = logging.getLogger()
 
 
 @dataclass
@@ -33,9 +34,8 @@ class Processor:
     def _convert_all(self):
         self.results = []
         for directory in self._file_map.contents:
-            print(f"Working in directory {directory}")
             self.results += self._convert_files_in_directory(directory)
-        print(f"Finished converting all videos!")
+        log.info("Finished converting all videos!")
         return self.results
 
     def _convert_files_in_directory(self, directory):
@@ -44,12 +44,12 @@ class Processor:
         total_videos = len(self._file_map.contents[directory])
         for video in self._file_map.contents[directory]:
             item = self._get_video_processor(video)
-            print(f"Processing video {video.full_path} ({len(videos_processed)}/{total_videos})")
+            log.info(f"Processing video '{video.name}' ({len(videos_processed)}/{total_videos})")
             videos_processed.append(video)
 
             status = item.process()
             return_values.append({"video": video, "status": status})
-        print(f"Finished converting files in directory {directory}")
+        log.info(f"Finished converting files in directory {directory}")
         return return_values
 
     def _get_video_processor(self, video):

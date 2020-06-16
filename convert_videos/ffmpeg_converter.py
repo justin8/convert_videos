@@ -4,6 +4,7 @@ import os
 
 import ffmpy
 
+from .colour import colour
 from .settings import AudioSettings, VideoSettings
 
 
@@ -29,11 +30,11 @@ class FFmpegConverter:
 
         ff = ffmpy.FFmpeg(inputs={self.source_file_path: input_settings}, outputs={self.destination_file_path: output_settings})
         if self.dry_run:
-            print(f"DRY-RUN: Would start conversion. Command: '{ff.cmd}'")
+            log.info(colour("blue", f"DRY-RUN: Would start conversion. Command: '{ff.cmd}'"))
         else:
             log.info(f"Starting conversion. Command: '{ff.cmd}'")
             ff.run()
-            log.info(f"Successfully finished conversion!")
+            log.info("Successfully finished conversion!")
 
     def _generate_ffmpeg_settings(self, mode):
         if mode == "input":

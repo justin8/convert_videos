@@ -11,8 +11,9 @@ from video_utils import Video
 
 from .ffmpeg_converter import FFmpegConverter
 from .settings import AudioSettings, VideoSettings
+from .colour import colour
 
-log = logging.getLogger(__name__)
+log = logging.getLogger()
 
 
 class Status(Enum):
@@ -33,6 +34,12 @@ class Status(Enum):
 
     def __str__(self):
         return titlecase(lowercase(self.name))
+
+    def colour(self):
+        c = "green"
+        if self == Status.FAILED:
+            c = "red"
+        return colour(c, str(self))
 
 
 @dataclass
@@ -56,10 +63,10 @@ class VideoProcessor:
 
     def process(self):
         if self.video.codec == self.video_settings.codec:
-            print(f"{self.video.name} is already in the desired format")
+            log.info(f"'{self.video.name}' is already in the desired format")
             if not self.force:
                 return Status.IN_DESIRED_FORMAT
-            print(f"Forcing conversion anyway (--force is enabled)")
+            log.info("Forcing conversion anyway (--force is enabled)")
 
         if self.already_processed():
             return Status.ALREADY_PROCESSED
@@ -75,26 +82,26 @@ class VideoProcessor:
                 audio_settings=self.audio_settings,
                 dry_run=self.dry_run,
             )
+            raise Exception
             converter.process()
             self._move_output_video()
             return Status.CONVERTED
         except Exception as e:
-            print(f"Failed to convert {self.video.full_path}. Exception:")
-            print(e)
+            log.error(colour("red", f"Failed to convert {self.video.full_path}. Exception:"))
+            log.error(e)
             traceback.print_exc()
-            print()
             return Status.FAILED
 
     def already_processed(self):
         renamed_path = self.renamed_path()
         if os.path.exists(renamed_path):
-            print(f"File {self.video.name} appears to have already been converted to {renamed_path} exists. Skipping")
+            log.info(f"File '{self.video.name}' appears to have already been converted to {renamed_path} exists. Skipping")
             return True
 
         split_filename = os.path.splitext(self.video.name)
         codec_name = self.video_settings.codec.pretty_name
         if split_filename[0].endswith(codec_name):
-            print(f"File {self.video.name} already matches the renaming format. Skipping")
+            log.info(f"File '{self.video.name}' already matches the renaming format. Skipping")
             return True
 
         return False
@@ -109,12 +116,12 @@ class VideoProcessor:
         return f"{split_filename[0]}.{self.container}"
 
     def _move_output_video(self):
-        print(f"Moving file from temporary storage back to original folder")
+        log.info("Moving file from temporary storage back to original folder")
         if not self.dry_run:
             shutil.move(self.temp_file, self.renamed_path())
         if self.in_place:
             if self.dry_run:
-                print(f"DRY-RUN: Would replace original file {self.video.full_path}")
+                log.info(colour("blue", f"DRY-RUN: Would replace original file {self.video.full_path}"))
                 return
             print(f"Replacing original file {self.video.full_path}")
             os.remove(self.video.full_path)

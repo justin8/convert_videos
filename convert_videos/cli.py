@@ -3,18 +3,25 @@ import logging
 
 from prettytable import PrettyTable
 from video_utils import Codec
+from colorama import Fore
 
 from .processor import Processor, AudioSettings, VideoSettings
 
 # TODO: How do I set show_defaults on all commands?
 CONTEXT_SETTINGS = dict(help_option_names=["--help", "-h"])
+LOG_FORMATTER = logging.Formatter("%(asctime)s - %(message)s", "%Y-%m-%d %H:%M:%S")
+log = None
 
 
-def set_log_level(verbose):
-    log_level = logging.WARNING
+def configure_logger(verbose):
+    global log
+    log_level = logging.INFO
     if verbose:
-        log_level = logging.INFO
+        log_level = logging.DEBUG
+
     logging.basicConfig(level=log_level)
+    log = logging.getLogger()
+    log.handlers[0].setFormatter(LOG_FORMATTER)
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)
@@ -54,8 +61,7 @@ def main(
     dry_run,
     nvidia_hw_accel,
 ):
-
-    set_log_level(verbose)
+    configure_logger(verbose)
 
     hw_accel = None
     if nvidia_hw_accel:
@@ -92,5 +98,5 @@ def _print_conversion_results(results):
     table = PrettyTable(["Video", "Status"])
 
     for result in results:
-        table.add_row([result["video"].full_path, result["status"]])
+        table.add_row([result["video"].full_path, result["status"].colour()])
     print(table)
