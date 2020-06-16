@@ -44,7 +44,7 @@ class Processor:
         total_videos = len(self._file_map.contents[directory])
         for video in self._file_map.contents[directory]:
             item = self._get_video_processor(video)
-            log.info(f"Processing video '{video.name}' ({len(videos_processed)}/{total_videos})")
+            log.debug(f"Processing video '{video.name}' ({len(videos_processed)}/{total_videos})")
             videos_processed.append(video)
 
             status = item.process()

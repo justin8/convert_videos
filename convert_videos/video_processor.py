@@ -63,10 +63,10 @@ class VideoProcessor:
 
     def process(self):
         if self.video.codec == self.video_settings.codec:
-            log.info(f"'{self.video.name}' is already in the desired format")
+            log.debug(f"'{self.video.name}' is already in the desired format")
             if not self.force:
                 return Status.IN_DESIRED_FORMAT
-            log.info("Forcing conversion anyway (--force is enabled)")
+            log.debug("Forcing conversion anyway (--force is enabled)")
 
         if self.already_processed():
             return Status.ALREADY_PROCESSED
@@ -82,7 +82,6 @@ class VideoProcessor:
                 audio_settings=self.audio_settings,
                 dry_run=self.dry_run,
             )
-            raise Exception
             converter.process()
             self._move_output_video()
             return Status.CONVERTED
@@ -95,13 +94,13 @@ class VideoProcessor:
     def already_processed(self):
         renamed_path = self.renamed_path()
         if os.path.exists(renamed_path):
-            log.info(f"File '{self.video.name}' appears to have already been converted to {renamed_path} exists. Skipping")
+            log.debug(f"File '{self.video.name}' appears to have already been converted to {renamed_path} exists. Skipping")
             return True
 
         split_filename = os.path.splitext(self.video.name)
         codec_name = self.video_settings.codec.pretty_name
         if split_filename[0].endswith(codec_name):
-            log.info(f"File '{self.video.name}' already matches the renaming format. Skipping")
+            log.debug(f"File '{self.video.name}' already matches the renaming format. Skipping")
             return True
 
         return False
