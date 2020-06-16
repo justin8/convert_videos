@@ -1,6 +1,6 @@
 import pytest
 from convert_videos import video_processor
-from convert_videos.video_processor import VideoProcessor
+from convert_videos.video_processor import VideoProcessor, Status
 from convert_videos.settings import AudioSettings, VideoSettings
 from video_utils import Video, Codec
 from mock import patch
@@ -56,7 +56,7 @@ def test_process(mock_create_temp_file, mock_move_output_video, mock_ffmpeg_conv
         extra_ffmpeg_output_args="",
         destination_file_path="/foo",
         source_file_path="/asdf/foo/bar.mkv",
-        dry_run=False,
+        dry_run=False
     )
     mock_ffmpeg_converter().process.assert_called()
     mock_move_output_video.assert_called()
@@ -153,3 +153,34 @@ def test_move_output_video_in_place_dry_run(mock_remove, mock_move, target):
     target._move_output_video()
     mock_move.assert_not_called()
     mock_remove.assert_not_called
+
+
+def test_in_desired_format(target):
+    target.video.codec = Codec("HEVC")
+    target.video_settings.codec = Codec("HEVC")
+    response = target.process()
+    assert response == Status.IN_DESIRED_FORMAT
+
+
+@patch.object(VideoProcessor, "already_processed", return_value=True)
+def test_already_processed(mock_already_processed, target):
+    response = target.process()
+    assert response == Status.ALREADY_PROCESSED
+
+
+@patch.object(VideoProcessor, "already_processed", return_value=False)
+@patch.object(VideoProcessor, "_create_temp_file")
+@patch("convert_videos.video_processor.FFmpegConverter")
+@patch.object(VideoProcessor, "_move_output_video")
+def test_converted(m1, m2, m3, m4, target):
+    response = target.process()
+    assert response == Status.CONVERTED
+
+
+@patch.object(VideoProcessor, "already_processed", return_value=False)
+@patch.object(VideoProcessor, "_create_temp_file")
+@patch("convert_videos.video_processor.FFmpegConverter", side_effect=Exception)
+@patch.object(VideoProcessor, "_move_output_video")
+def test_failed(m1, m2, m3, m4, target):
+    response = target.process()
+    assert response == Status.FAILED

@@ -1,8 +1,10 @@
 from dataclasses import dataclass
+from prettytable import PrettyTable
 
-from .video_processor import VideoProcessor, VideoSettings, AudioSettings
 from video_utils import FileMap
-import traceback
+
+from .video_processor import VideoProcessor
+from .settings import VideoSettings, AudioSettings
 
 # TODO: Use logging module everywhere
 
@@ -29,44 +31,33 @@ class Processor:
         self._file_map.load()
 
     def _convert_all(self):
-        failures = []
-
+        self.results = []
         for directory in self._file_map.contents:
             print(f"Working in directory {directory}")
-            self._convert_files_in_directory(directory, failures)
+            self.results += self._convert_files_in_directory(directory)
         print(f"Finished converting all videos!")
-        if failures:
-            print(f"The below files failed to convert correctly")
-            for failure in failures:
-                print(failure)
 
-    def _convert_files_in_directory(self, directory, failures):
+        self._print_conversion_results()
+
+    def _print_conversion_results(self):
+        table = PrettyTable(["Video", "Status"])
+        for result in self.results:
+            table.add_row([result["video"].name, result["status"]])
+        print(table)
+
+    def _convert_files_in_directory(self, directory):
         videos_processed = []
+        return_values = []
         total_videos = len(self._file_map.contents[directory])
         for video in self._file_map.contents[directory]:
             item = self._get_video_processor(video)
-            print(
-                f"Processing video {video.full_path} ({len(videos_processed)}/{total_videos})")
+            print(f"Processing video {video.full_path} ({len(videos_processed)}/{total_videos})")
             videos_processed.append(video)
 
-            if video.codec == self.video_settings.codec:
-                print(f"{video.name} is already in the desired format")
-                if not self.force:
-                    continue
-                print(f"Forcing conversion anyway (--force is enabled)")
-
-            if item.already_processed():
-                continue
-
-            try:
-                item.process()
-            except Exception as e:
-                failures.append(item)
-                print(f"Failed to convert {video.full_path}. Exception:")
-                print(e)
-                traceback.print_exc()
-                print()
+            status = item.process()
+            return_values.append({"video": video, "status": status})
         print(f"Finished converting files in directory {directory}")
+        return return_values
 
     def _get_video_processor(self, video):
         return VideoProcessor(
@@ -79,4 +70,5 @@ class Processor:
             temp_directory=self.temp_directory,
             in_place=self.in_place,
             dry_run=self.dry_run,
+            force=self.force,
         )

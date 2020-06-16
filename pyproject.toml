@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "convert_videos"
-version = "2.4.3"
+version = "2.5.0"
 description = "This tool allows bulk conversion of videos using ffmpeg"
 authors = ["Justin Dray <justin@dray.be>"]
 license = "MIT"
@@ -20,6 +20,8 @@ colorama = "^0.4.0"
 ffmpy = "^0.2.2"
 video_utils = "^2.0.4"
 click = "^7.0"
+prettytable = "^0.7.2"
+stringcase = "^1.2.0"
 
 [tool.poetry.dev-dependencies]
 coverage = "^5.0"

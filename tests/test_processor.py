@@ -1,4 +1,5 @@
 from convert_videos import processor, Processor, AudioSettings, VideoSettings
+from convert_videos.video_processor import Status
 from video_utils import Codec, Video
 import pytest
 from mock import patch, NonCallableMagicMock
@@ -68,40 +69,18 @@ def test_convert_all(mock_convert_files_in_directory, target, file_map_fixture):
     target._convert_all()
     assert mock_convert_files_in_directory.call_count == 2
     mock_convert_files_in_directory.assert_any_call(
-        "/Users/jdray/git/home/convert_videos/tests/testData/foo", [])
+        "/Users/jdray/git/home/convert_videos/tests/testData/foo")
     mock_convert_files_in_directory.assert_any_call(
-        "/Users/jdray/git/home/convert_videos/tests/testData/bar", [])
+        "/Users/jdray/git/home/convert_videos/tests/testData/bar")
 
 
 @patch.object(Processor, "_get_video_processor")
-def test_convert_files_in_directory_one_item(mock_get_video_processor, target, file_map_fixture):
-    mock_get_video_processor().already_processed.return_value = False
+def test_convert_files_in_directory_status_passthrough(mock_get_video_processor, target, file_map_fixture):
+    mock_get_video_processor().process.return_value = Status.FAILED
     target._file_map = file_map_fixture
-    failures = []
-    target._convert_files_in_directory(
-        "/Users/jdray/git/home/convert_videos/tests/testData/foo", failures)
+    response = target._convert_files_in_directory(
+        "/Users/jdray/git/home/convert_videos/tests/testData/foo")
 
-    assert mock_get_video_processor().process.call_count == 1
+    failures = [x for x in response if x["status"] == Status.FAILED]
 
-
-@patch.object(Processor, "_get_video_processor")
-def test_convert_files_in_directory_all_already_processed(mock_get_video_processor, target, file_map_fixture):
-    mock_get_video_processor().already_processed.return_value = True
-    target._file_map = file_map_fixture
-    failures = []
-    target._convert_files_in_directory(
-        "/Users/jdray/git/home/convert_videos/tests/testData/foo", failures)
-
-    assert mock_get_video_processor().process.call_count == 0
-
-
-@patch.object(Processor, "_get_video_processor")
-def test_convert_files_in_directory_failure_handling(mock_get_video_processor, target, file_map_fixture):
-    mock_get_video_processor().already_processed.return_value = False
-    mock_get_video_processor().process.side_effect = Exception
-    target._file_map = file_map_fixture
-    failures = []
-    target._convert_files_in_directory(
-        "/Users/jdray/git/home/convert_videos/tests/testData/foo", failures)
-
-    assert len(failures) == 1
+    assert len(failures) == 6
