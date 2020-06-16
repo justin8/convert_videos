@@ -32,9 +32,9 @@ class FFmpegConverter:
         if self.dry_run:
             log.info(colour("blue", f"DRY-RUN: Would start conversion. Command: '{ff.cmd}'"))
         else:
-            log.info(f"Starting conversion. Command: '{ff.cmd}'")
+            log.info(colour("blue", f"Starting conversion. Command: '{ff.cmd}'"))
             ff.run()
-            log.info("Successfully finished conversion!")
+            log.info(colour("green", "Successfully finished conversion!"))
 
     def _generate_ffmpeg_settings(self, mode):
         if mode == "input":

@@ -115,7 +115,7 @@ class VideoProcessor:
         return f"{split_filename[0]}.{self.container}"
 
     def _move_output_video(self):
-        log.info("Moving file from temporary storage back to original folder")
+        log.debug("Moving file from temporary storage back to original folder")
         if not self.dry_run:
             shutil.move(self.temp_file, self.renamed_path())
         if self.in_place:
