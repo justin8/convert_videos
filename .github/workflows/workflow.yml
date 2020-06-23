@@ -44,7 +44,7 @@ jobs:
       commit: ${{ steps.tag-releases.outputs.commit }}
     steps:
       - uses: actions/checkout@v2
-      - name: tag-releases
+      - name: Tag Releases
         run: |
           commits="$(cat "$GITHUB_EVENT_PATH" | jq -r '.commits[].id')"
           for commit in $commits; do
@@ -57,7 +57,7 @@ jobs:
               echo No version update in commit $commit
             fi
           done
-      - name: push-tags
+      - name: Push Tags
         run: |
           branch=${{ needs.test.outputs.branch }}
           if [[ $branch == master ]]; then
@@ -94,6 +94,6 @@ jobs:
           branch=${{ needs.test.outputs.branch }}
           if [[ $branch != master ]]; then
             echo "Not publishing changes outside master branch"
-            echo exit 0
+            exit 0
           fi
           poetry publish
