@@ -41,10 +41,11 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     outputs:
-      commit: ${{ steps.tag-releases.outputs.commit }}
+      commit: ${{ steps.tag_releases.outputs.commit }}
     steps:
       - uses: actions/checkout@v2
       - name: Tag Releases
+        id: tag_releases
         run: |
           commits="$(cat "$GITHUB_EVENT_PATH" | jq -r '.commits[].id')"
           for commit in $commits; do
@@ -79,7 +80,7 @@ jobs:
       - name: Build
         run: |
           branch=${{ needs.test.outputs.branch }}
-          commit=${{ needs.tag-releases.outputs.commit}}
+          commit=${{ needs.tag-releases.outputs.commit }}
           if [[ $branch != master ]] || [[ ! $commit ]]; then
             echo "Not publishing changes outside master branch or when no version update has occurred"
             exit 0
@@ -92,7 +93,7 @@ jobs:
       - name: Publish
         run: |
           branch=${{ needs.test.outputs.branch }}
-          commit=${{ needs.tag-releases.outputs.commit}}
+          commit=${{ needs.tag-releases.outputs.commit }}
           if [[ $branch != master ]] || [[ ! $commit ]]; then
             echo "Not publishing changes outside master branch or when no version update has occurred"
             exit 0
