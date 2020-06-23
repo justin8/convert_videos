@@ -1,4 +1,4 @@
-name: Tests
+name: Workflow
 
 on: [push, pull_request]
 
@@ -62,7 +62,7 @@ jobs:
           branch=${{ needs.test.outputs.branch }}
           if [[ $branch == master ]]; then
             echo "Pushing tags..."
-            git push --tags
+            git push --tags || :
           else
             echo "Skipping pushing tags as this is not the master branch"
           fi
