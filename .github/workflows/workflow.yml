@@ -37,7 +37,7 @@ jobs:
         run: |
           bash <(curl -s https://codecov.io/bash) -Z || echo 'Codecov failed to upload'
 
-  update-release-branch:
+  tag-releases:
     needs: test
     runs-on: ubuntu-latest
     outputs:
@@ -69,7 +69,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    needs: [test, update-release-branch]
+    needs: [test, tag-releases]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.8
@@ -79,11 +79,11 @@ jobs:
       - name: Build
         run: |
           branch=${{ needs.test.outputs.branch }}
-          if [[ $branch != master ]]; then
-            echo "Not publishing changes outside master branch"
+          commit=${{ needs.tag-releases.outputs.commit}}
+          if [[ $branch != master ]] || [[ ! $commit ]]; then
+            echo "Not publishing changes outside master branch or when no version update has occurred"
             exit 0
           fi
-          commit=${{ needs.update-release-branch.outputs.commit }}
           git checkout $commit
           pip install poetry
           poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
@@ -92,8 +92,9 @@ jobs:
       - name: Publish
         run: |
           branch=${{ needs.test.outputs.branch }}
-          if [[ $branch != master ]]; then
-            echo "Not publishing changes outside master branch"
+          commit=${{ needs.tag-releases.outputs.commit}}
+          if [[ $branch != master ]] || [[ ! $commit ]]; then
+            echo "Not publishing changes outside master branch or when no version update has occurred"
             exit 0
           fi
           poetry publish
