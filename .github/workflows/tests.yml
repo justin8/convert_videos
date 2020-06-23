@@ -3,7 +3,7 @@ name: Tests
 on: [push, pull_request]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     strategy:
@@ -31,3 +31,33 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
           bash <(curl -s https://codecov.io/bash) -Z || echo 'Codecov failed to upload'
+
+  update-release-branch:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      - name: tag-releases
+        run: |
+          commits="$(cat "$GITHUB_EVENT_PATH" | jq -r '.commits[].id')"
+          for commit in $commits; do
+            version="$(git show $commit pyproject.toml | grep -Po "(?<=^\+version = \")[\d\.]+")" ||:
+            if [[ $version ]]; then
+              echo Version was changed in commit $commit to $version. Tagging.
+              git tag $version
+            else
+              echo No version update in commit $commit
+            fi
+          done
+
+          branch=${{ steps.extract_branch.outputs.branch }}
+          if [[ $branch == master ]]; then
+            echo "Pushing tags..."
+            git push --tags
+          else
+            echo "Skipping pushing tags as this is not the master branch"
+          fi
