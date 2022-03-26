@@ -91,8 +91,11 @@ def main(
 
 
 def _print_conversion_results(results):
-    table = PrettyTable(["Video", "Status"])
+    table = PrettyTable(["Video", "Original Codec", "Status"])
 
     for result in results:
-        table.add_row([result["video"].full_path, result["status"].colour()])
+        codec = result["video"].codec.pretty_name
+        if codec is None:
+            codec = "Unknown"
+        table.add_row([result["video"].full_path, codec, result["status"].colour()])
     print(table)
