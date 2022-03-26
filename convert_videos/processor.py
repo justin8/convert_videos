@@ -35,7 +35,7 @@ class Processor:
         self.results = []
         for directory in self._file_map.contents:
             self.results += self._convert_files_in_directory(directory)
-        log.info("Finished converting all videos!")
+        log.info(f"Finished converting all videos in {self.directory}")
         return self.results
 
     def _convert_files_in_directory(self, directory):
