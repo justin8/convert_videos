@@ -42,7 +42,7 @@ class FFmpegConverter:
             if self.video_settings.encoder == "nvidia":
                 output = " -hwaccel cuvid"
             if self.video_settings.encoder == "intel":
-                output = " -hwaccel qsv"
+                output = " -hwaccel qsv -hwaccel_output_format qsv"
             return output
 
         output = "" + "-y" + " -threads 0" + str(self.video_settings) + str(self.audio_settings) + " " + self.extra_ffmpeg_output_args

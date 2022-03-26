@@ -54,6 +54,14 @@ class VideoSettings:
 
             # b-frames are disabled by default, and only supported on Turing+ architectures. Need to auto-detect this
             # output += f" -rc-lookahead -b_ref_mode middle"
+        elif self.encoder == "intel":
+            # qsv doesn't support CRF either; they have their own methods at the link below
+            # ICQ and LA-ICQ are apparently the gold standard; but only supported on windows (weird)
+            # https://www.intel.com/content/www/us/en/developer/articles/technical/common-bitrate-control-methods-in-intel-media-sdk.html
+            output = f" -global_quality {self.quality}"
+            if self.codec.format_name == "AVC":
+                # Look-ahead is supported for x264 and is preferable for better quality
+                output += " -look_ahead 1"
         else:
             output = f" -crf {self.quality}"
         return output

@@ -29,7 +29,7 @@ def configure_logger(verbose):
 @click.option("--in-place", "-i", is_flag=True, help="Replace the original files instead of appending the new codec name")
 @click.option("--force", "-f", is_flag=True, help="Force conversion even if the format of the file already matches the desired format")
 @click.option("--video-codec", default="HEVC", show_default=True, help="A target video codec. Supported codecs: HEVC, AVC")
-@click.option("--quality", "-q", type=int, default=23, show_default=True, help="The quantizer quality level to use")
+@click.option("--quality", "-q", type=int, default=24, show_default=True, help="The quantizer quality level to use.")
 @click.option("--preset", "-p", default="medium", show_default=True, help="FFmpeg preset to use.")
 @click.option("--width", "-w", type=int, help="Specify a new width to enable resizing of the video")
 @click.option("--extra-input-args", default="", help="Specify any extra arguments you would like to pass to FFMpeg input here")
