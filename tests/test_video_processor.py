@@ -10,7 +10,7 @@ from mock import patch
 def target():
     audio_settings = AudioSettings(codec=Codec("AAC"), channels=2, bitrate=120)
 
-    video_settings = VideoSettings(codec=Codec("HEVC"), quality=25, preset="slow", hw_accel=None,)
+    video_settings = VideoSettings(codec=Codec("HEVC"), quality=25, preset="slow", encoder="software")
 
     return VideoProcessor(
         video=Video("bar.mkv", "/asdf/foo"),

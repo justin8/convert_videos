@@ -11,7 +11,7 @@ class AudioSettings:
 
     def __str__(self):
         output = ""
-        output += f" -acodec {self.codec.ffmpeg_name}"
+        output += f" -acodec {self.codec.get_ffmpeg_name()}"
         output += f" -ab {self.bitrate}k"
         output += f" -ac {self.channels}"
         output += f" -map 0:a"  # Include all audio channels
@@ -23,13 +23,13 @@ class VideoSettings:
     codec: Codec
     quality: int
     preset: str
-    hw_accel: str
     width: int = None  # Or None
+    encoder: str = "software"
 
     def __str__(self):
         output = self._get_stream_settings()
         output += f" -vcodec {self._get_ffmpeg_codec()}"
-        if self.codec.ffmpeg_name == "copy":
+        if self.codec.format_name == "copy":
             return output
 
         output += f" -preset {self.preset}"
@@ -46,7 +46,7 @@ class VideoSettings:
         return output
 
     def _get_quality_settings(self):
-        if self.hw_accel == "nvidia":
+        if self.encoder == "nvidia":
             # nvenc doesn't support CRF; only CQ and QP modes.
             # QP consistently provides better quality output for the same bitrate on NVENC however, so we're using that
             output = f" -rc constqp -qp {self.quality}"
@@ -74,18 +74,8 @@ class VideoSettings:
         ffmpeg_codec = None
         if self.codec.format_name == "copy":
             ffmpeg_codec = "copy"
-        elif self.hw_accel == "nvidia":
-            if self.codec.format_name == "HEVC":
-                ffmpeg_codec = "hevc_nvenc"
-            if self.codec.format_name == "AVC":
-                ffmpeg_codec = "h264_nvenc"
-        elif self.hw_accel == "intel":
-            if self.codec.format_name == "HEVC":
-                ffmpeg_codec = "hevc_qsv"
-            if self.codec.format_name == "AVC":
-                ffmpeg_codec = "h264_qsv"
         else:
-            ffmpeg_codec = self.codec.ffmpeg_name
+            ffmpeg_codec = self.codec.get_ffmpeg_name(self.encoder)
         if not ffmpeg_codec:
             raise Exception("Failed to find the desired codec!")
         return ffmpeg_codec

@@ -351,7 +351,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "video-utils"
-version = "2.0.12"
+version = "2.2.0"
 description = "This library is used for lots of shared functionality around parsing TV shows and movies"
 category = "main"
 optional = false
@@ -386,7 +386,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "4d809a43a447ee6575fa1e16ba0f7ac4840592d12409311231fd17d081ffa1db"
+content-hash = "b088c6c2f4d4030c7e00687933b7e22a7eb86c8371eaee5fba2f9802ebb03b93"
 
 [metadata.files]
 appdirs = [
@@ -663,8 +663,8 @@ typing-extensions = [
     {file = "typing_extensions-4.1.1.tar.gz", hash = "sha256:1a9462dcc3347a79b1f1c0271fbe79e844580bb598bafa1ed208b94da3cdcd42"},
 ]
 video-utils = [
-    {file = "video_utils-2.0.12-py3-none-any.whl", hash = "sha256:cc5e089830d531529babc811adf204419894c1de6e36822db2e3f6db6864fd99"},
-    {file = "video_utils-2.0.12.tar.gz", hash = "sha256:cb74751d58779b242f1c6714d3519eab30db16b4f63605b8bce000f23482a396"},
+    {file = "video_utils-2.2.0-py3-none-any.whl", hash = "sha256:8cd0d35b80f688c3bc48c3793eda98db1b018dae666c868b0a24b3539a1fc3ee"},
+    {file = "video_utils-2.2.0.tar.gz", hash = "sha256:872b38d5f03cfadcaf50b894e8db14990f1421baaad6c34419beff280ba94c37"},
 ]
 wcwidth = [
     {file = "wcwidth-0.2.5-py2.py3-none-any.whl", hash = "sha256:beb4802a9cebb9144e99086eff703a642a13d6a0052920003a230f3294bbe784"},

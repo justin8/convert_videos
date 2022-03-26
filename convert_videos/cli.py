@@ -41,7 +41,7 @@ def configure_logger(verbose):
 @click.option("--verbose", "-v", is_flag=True, help="Enable verbose log output")
 @click.option("--container", default="mkv", show_default=True, help="Specify a video container to convert the videos in to")
 @click.option("--dry-run", is_flag=True, help="Do not make actual changes")
-@click.option("--hw-accel", type=click.Choice(["nvidia", "intel"]), help="Use HW acceleration instead of software encoding.")
+@click.option("--encoder", type=click.Choice(["software", "nvidia", "intel"]), default="software", show_default=True, help="Optionally use a harwdare encoder to speed things up.")
 def main(
     directories,
     force,
@@ -59,17 +59,17 @@ def main(
     verbose,
     container,
     dry_run,
-    hw_accel,
+    encoder,
 ):
     configure_logger(verbose)
 
-    video_settings = VideoSettings(codec=Codec(video_codec), quality=quality, preset=preset, width=width, hw_accel=hw_accel)
+    video_settings = VideoSettings(codec=Codec(video_codec), quality=quality, preset=preset, width=width, encoder=encoder)
     audio_settings = AudioSettings(codec=Codec(audio_codec), channels=audio_channels, bitrate=audio_bitrate,)
 
-    if video_settings.codec.ffmpeg_name is None:
+    if video_settings.codec.get_ffmpeg_name() is None:
         raise Exception("Invalid video codec specified")
 
-    if audio_settings.codec.ffmpeg_name is None:
+    if audio_settings.codec.get_ffmpeg_name() is None:
         raise Exception("Invalid audio codec specified")
 
     results = []

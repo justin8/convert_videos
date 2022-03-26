@@ -39,9 +39,9 @@ class FFmpegConverter:
     def _generate_ffmpeg_settings(self, mode):
         if mode == "input":
             output = " " + self.extra_ffmpeg_input_args
-            if self.video_settings.hw_accel == "nvidia":
+            if self.video_settings.encoder == "nvidia":
                 output = " -hwaccel cuvid"
-            if self.video_settings.hw_accel == "intel":
+            if self.video_settings.encoder == "intel":
                 output = " -hwaccel qsv"
             return output
 

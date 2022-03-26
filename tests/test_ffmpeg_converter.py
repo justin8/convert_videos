@@ -12,7 +12,7 @@ from convert_videos import ffmpeg_converter
 def target():
     audio_settings = AudioSettings(codec=Codec("AAC"), channels=2, bitrate=120)
 
-    video_settings = VideoSettings(codec=Codec("HEVC"), quality=25, preset="slow", hw_accel=None)
+    video_settings = VideoSettings(codec=Codec("HEVC"), quality=25, preset="slow", encoder="software")
 
     return FFmpegConverter(
         source_file_path="/asdf/foo/bar.mkv",
@@ -56,7 +56,7 @@ def test_generate_ffmpeg_input_settings(target):
 
 
 def test_generate_ffmpeg_input_settings_nvidia_hw(target):
-    target.video_settings.hw_accel = "nvidia"
+    target.video_settings.encoder = "nvidia"
     result = target._generate_ffmpeg_settings("input")
     assert result == " -hwaccel cuvid"
 
