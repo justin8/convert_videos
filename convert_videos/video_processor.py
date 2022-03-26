@@ -20,6 +20,9 @@ class Status(Enum):
     # Successful conversion
     CONVERTED = auto()
 
+    # The file would be converted, if we weren't running in dry-run mode
+    WOULD_CONVERT = auto()
+
     # If a file is already converted with renaming
     # (e.g. appending the output codec) and this is that converted file
     ALREADY_PROCESSED = auto()
@@ -84,6 +87,8 @@ class VideoProcessor:
             )
             converter.process()
             self._move_output_video()
+            if self.dry_run:
+                return Status.WOULD_CONVERT
             return Status.CONVERTED
         except Exception as e:
             log.error(colour("red", f"Failed to convert {self.video.full_path}. Exception:"))
