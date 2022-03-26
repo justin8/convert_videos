@@ -35,7 +35,7 @@ class Processor:
         self.results = []
         for directory in self._file_map.contents:
             self.results += self._convert_files_in_directory(directory)
-        log.info(f"Finished converting all videos in {self.directory}")
+        log.info(f"Finished processing all videos in {self.directory}")
         return self.results
 
     def _convert_files_in_directory(self, directory):
@@ -49,7 +49,7 @@ class Processor:
 
             status = item.process()
             return_values.append({"video": video, "status": status})
-        log.info(f"Finished converting files in directory {directory}")
+        log.info(f"Finished processing files in directory {directory}")
         return return_values
 
     def _get_video_processor(self, video):
