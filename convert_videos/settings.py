@@ -79,6 +79,11 @@ class VideoSettings:
                 ffmpeg_codec = "hevc_nvenc"
             if self.codec.format_name == "AVC":
                 ffmpeg_codec = "h264_nvenc"
+        elif self.hw_accel == "intel":
+            if self.codec.format_name == "HEVC":
+                ffmpeg_codec = "hevc_qsv"
+            if self.codec.format_name == "AVC":
+                ffmpeg_codec = "h264_qsv"
         else:
             ffmpeg_codec = self.codec.ffmpeg_name
         if not ffmpeg_codec:

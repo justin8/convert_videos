@@ -41,7 +41,7 @@ def configure_logger(verbose):
 @click.option("--verbose", "-v", is_flag=True, help="Enable verbose log output")
 @click.option("--container", default="mkv", show_default=True, help="Specify a video container to convert the videos in to")
 @click.option("--dry-run", is_flag=True, help="Do not make actual changes")
-@click.option("--nvidia-hw-accel", is_flag=True, help="Use Nvidia HW acceleration instead of software encoding")
+@click.option("--hw-accel", type=click.Choice(["nvidia", "intel"]), help="Use HW acceleration instead of software encoding.")
 def main(
     directories,
     force,
@@ -59,13 +59,9 @@ def main(
     verbose,
     container,
     dry_run,
-    nvidia_hw_accel,
+    hw_accel,
 ):
     configure_logger(verbose)
-
-    hw_accel = None
-    if nvidia_hw_accel:
-        hw_accel = "nvidia"
 
     video_settings = VideoSettings(codec=Codec(video_codec), quality=quality, preset=preset, width=width, hw_accel=hw_accel)
     audio_settings = AudioSettings(codec=Codec(audio_codec), channels=audio_channels, bitrate=audio_bitrate,)

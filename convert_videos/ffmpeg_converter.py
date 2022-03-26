@@ -41,6 +41,8 @@ class FFmpegConverter:
             output = " " + self.extra_ffmpeg_input_args
             if self.video_settings.hw_accel == "nvidia":
                 output = " -hwaccel cuvid"
+            if self.video_settings.hw_accel == "intel":
+                output = " -hwaccel qsv"
             return output
 
         output = "" + "-y" + " -threads 0" + str(self.video_settings) + str(self.audio_settings) + " " + self.extra_ffmpeg_output_args
