@@ -9,7 +9,12 @@ from convert_videos import ffmpeg_converter
 
 
 @pytest.fixture
-def target():
+@patch("os.path.exists", return_value=True)
+@patch("os.path.isfile", return_value=True)
+@patch("os.access", return_value=True)
+@patch("os.path.isdir")
+@patch("os.remove")
+def target(mock_remove, mock_isdir, mock_access, mock_isfile, mock_exists):
     audio_settings = AudioSettings(codec=Codec("AAC"), channels=2, bitrate=120)
 
     video_settings = VideoSettings(codec=Codec("HEVC"), quality=25, preset="slow", encoder="software")
@@ -31,6 +36,15 @@ def test_process(mock_ffmpy, mock_settings, target):
     target.process()
     mock_ffmpy.FFmpeg.assert_called_with(inputs={"/asdf/foo/bar.mkv": "12345"}, outputs={"/asdf/temp/path.mkv": "12345"})
     mock_ffmpy.FFmpeg().run.assert_called()
+
+
+@patch.object(FFmpegConverter, "_generate_ffmpeg_settings", return_value="12345")
+@patch.object(ffmpeg_converter, "ffmpy")
+def test_process_dryrun(mock_ffmpy, mock_settings, target):
+    target.dry_run = True
+    target.process()
+    mock_ffmpy.FFmpeg.assert_called_with(inputs={"/asdf/foo/bar.mkv": "12345"}, outputs={"/asdf/temp/path.mkv": "12345"})
+    mock_ffmpy.FFmpeg().run.assert_not_called()
 
 
 def test_generate_ffmpeg_output_settings(target):

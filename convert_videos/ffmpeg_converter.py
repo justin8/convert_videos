@@ -21,7 +21,7 @@ class FFmpegConverter:
     video_settings: VideoSettings
     audio_settings: AudioSettings
 
-    def __post__init__(self):
+    def __post_init__(self):
         self._validate_destination()
 
     def process(self):
