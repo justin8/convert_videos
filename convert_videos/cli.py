@@ -66,11 +66,6 @@ def main(
     video_settings = VideoSettings(codec=Codec(video_codec), quality=quality, preset=preset, width=width, encoder=encoder)
     audio_settings = AudioSettings(codec=Codec(audio_codec), channels=audio_channels, bitrate=audio_bitrate,)
 
-    if video_settings.codec.get_ffmpeg_name() is None:
-        raise Exception("Invalid video codec specified")
-
-    if audio_settings.codec.get_ffmpeg_name() is None:
-        raise Exception("Invalid audio codec specified")
 
     results = []
     for directory in directories:

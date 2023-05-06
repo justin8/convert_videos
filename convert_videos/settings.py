@@ -9,13 +9,26 @@ class AudioSettings:
     channels: int
     bitrate: int
 
+    def __post_init__(self):
+        self._get_ffmpeg_codec()
+
     def __str__(self):
         output = ""
-        output += f" -acodec {self.codec.get_ffmpeg_name()}"
+        output += f" -acodec {self._get_ffmpeg_codec()}"
         output += f" -ab {self.bitrate}k"
         output += f" -ac {self.channels}"
         output += f" -map 0:a"  # Include all audio channels
         return output
+
+    def _get_ffmpeg_codec(self):
+        ffmpeg_codec = None
+        if self.codec.format_name == "copy":
+            ffmpeg_codec = "copy"
+        else:
+            ffmpeg_codec = self.codec.get_ffmpeg_name()
+        if not ffmpeg_codec:
+            raise Exception("Failed to find the desired audio codec!")
+        return ffmpeg_codec
 
 
 @dataclass
@@ -25,6 +38,9 @@ class VideoSettings:
     preset: str
     width: int = None  # Or None
     encoder: str = "software"
+
+    def __post_init__(self):
+        self._get_ffmpeg_codec()
 
     def __str__(self):
         output = self._get_stream_settings()
@@ -85,5 +101,5 @@ class VideoSettings:
         else:
             ffmpeg_codec = self.codec.get_ffmpeg_name(self.encoder)
         if not ffmpeg_codec:
-            raise Exception("Failed to find the desired codec!")
+            raise Exception("Failed to find the desired video codec!")
         return ffmpeg_codec
