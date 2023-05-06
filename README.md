@@ -17,6 +17,8 @@ The default output container is `mkv` format. This can be changed with the `--co
 
 ## Video output
 
+Default settings is HEVC/x265 at quality of 23
+
 ### Codecs
 
 Currently only HEVC (x265) and AVC (h264) are supported for video codecs.
@@ -27,18 +29,28 @@ Videos can be resized automatically by providing a width. Height is automaticall
 
 ### Hardware Acceleration
 
-Hardware acceleration is supported on nVidia devices. Caveats:
+Hardware acceleration is supported on nVidia and Intel devices.
 
-- Conversions use constqp mode for the quality setting instead of CRF, this is because nvenc does not support CRF
+Caveats for nVidia:
+- Conversions use constqp mode for the quality setting instead of CRF, as nvenc does not support CRF
 - b-frames are not currently supported; nvenc itself supports them on 20xx+ series graphics cards.
 
-Default settings:
-Audio: 160kbps 2 channel AAC
-Video: HEVC/x265 at quality of 23
+
+Caveats for Intel:
+- Conversions use global_quality mode as CRF isn't supported on Intel hardware. ICQ and LA-ICQ are apparently better, but only supported on Windows
+- Look-ahead is only supported on x264 (not HEVC)
+
+
+## Audio output
+
+Default settings is 160kbps 2 channel AAC.
+
+All audio streams will be included by default unless a language filter is specified with `--audio-language`.
+
 
 ## Subtitles
 
-All subtitles will be copied from the source if they exist
+All subtitles will be copied from the source if they exist unless a language filter is specified with `--subtitle-language`.
 
 ## Usage
 
@@ -46,43 +58,50 @@ All subtitles will be copied from the source if they exist
 Usage: convert-videos [OPTIONS] DIRECTORIES...
 
 Options:
-  -i, --in-place            Replace the original files instead of appending
-                            the new codec name
+  -i, --in-place                  Replace the original files instead of
+                                  appending the new codec name
 
-  -f, --force               Force conversion even if the format of the file
-                            already matches the desired format
+  -f, --force                     Force conversion even if the format of the
+                                  file already matches the desired format
 
-  --video-codec TEXT        A target video codec. Supported codecs: HEVC, AVC
-                            [default: HEVC]
+  --video-codec TEXT              A target video codec. Supported codecs:
+                                  HEVC, AVC  [default: HEVC]
 
-  -q, --quality INTEGER     The quantizer quality level to use  [default: 23]
-  -p, --preset TEXT         FFmpeg preset to use.  [default: medium]
-  -w, --width INTEGER       Specify a new width to enable resizing of the
-                            video
+  -q, --quality INTEGER           The quantizer quality level to use.
+                                  [default: 24]
 
-  --extra-input-args TEXT   Specify any extra arguments you would like to pass
-                            to FFMpeg input here
+  -p, --preset TEXT               FFmpeg preset to use.  [default: medium]
+  -w, --width INTEGER             Specify a new width to enable resizing of
+                                  the video
 
-  --extra-output-args TEXT  Specify any extra arguments you would like to pass
-                            to FFMpeg output here
+  --extra-input-args TEXT         Specify any extra arguments you would like
+                                  to pass to FFMpeg input here
 
-  --audio-codec TEXT        A target audio codec  [default: AAC]
-  --audio-channels INTEGER  The number of channels to mux sound in to
-                            [default: 2]
+  --extra-output-args TEXT        Specify any extra arguments you would like
+                                  to pass to FFMpeg output here
 
-  --audio-bitrate INTEGER   The bitrate to use for the audio codec  [default:
-                            160]
+  --audio-codec TEXT              A target audio codec  [default: AAC]
+  --audio-channels INTEGER        The number of channels to mux sound in to
+                                  [default: 2]
 
-  --temp-dir TEXT           Specify a temporary directory to use during
-                            conversions instead of the system default
+  --audio-bitrate INTEGER         The bitrate to use for the audio codec
+                                  [default: 160]
 
-  -v, --verbose             Enable verbose log output
-  --container TEXT          Specify a video container to convert the videos in
-                            to  [default: mkv]
+  --temp-dir TEXT                 Specify a temporary directory to use during
+                                  conversions instead of the system default
 
-  --dry-run                 Do not make actual changes
-  --nvidia-hw-accel         Use Nvidia HW acceleration instead of software
-                            encoding
+  -v, --verbose                   Enable verbose log output
+  --container TEXT                Specify a video container to convert the
+                                  videos in to  [default: mkv]
 
-  -h, --help                Show this message and exit.
+  --dry-run                       Do not make actual changes
+  --encoder [software|nvidia|intel]
+                                  Optionally use a harwdare encoder to speed
+                                  things up.  [default: software]
+
+  --audio-language TEXT           Only include audio streams in this language
+  --subtitle-language TEXT        Only include subtitle streams in this
+                                  language
+
+  -h, --help                      Show this message and exit.
 ```
