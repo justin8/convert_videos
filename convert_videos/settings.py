@@ -1,3 +1,4 @@
+from iso639 import to_iso639_2
 from dataclasses import dataclass
 
 from video_utils import Codec
@@ -8,19 +9,27 @@ class AudioSettings:
     codec: Codec
     channels: int
     bitrate: int
+    language: str = None
 
     def __post_init__(self):
-        self._get_ffmpeg_codec()
+        self.get_ffmpeg_codec()
 
     def __str__(self):
         output = ""
-        output += f" -acodec {self._get_ffmpeg_codec()}"
+        if self.language:
+            output = f" -map 0:a:m:language:{to_iso639_2(self.language)}"
+        else:
+            output += " -map 0:a"  # Include all audio channels
+
+        output += f" -acodec {self.get_ffmpeg_codec()}"
+        if self.get_ffmpeg_codec() == "copy":
+            return output
+
         output += f" -ab {self.bitrate}k"
         output += f" -ac {self.channels}"
-        output += f" -map 0:a"  # Include all audio channels
         return output
 
-    def _get_ffmpeg_codec(self):
+    def get_ffmpeg_codec(self):
         ffmpeg_codec = None
         if self.codec.format_name == "copy":
             ffmpeg_codec = "copy"
@@ -38,13 +47,14 @@ class VideoSettings:
     preset: str
     width: int = None  # Or None
     encoder: str = "software"
+    subtitle_language: str = None
 
     def __post_init__(self):
-        self._get_ffmpeg_codec()
+        self.get_ffmpeg_codec()
 
     def __str__(self):
         output = self._get_stream_settings()
-        output += f" -vcodec {self._get_ffmpeg_codec()}"
+        output += f" -vcodec {self.get_ffmpeg_codec()}"
         if self.codec.format_name == "copy":
             return output
 
@@ -85,16 +95,19 @@ class VideoSettings:
     def _get_codec_settings(self):
         output = ""
         if self.codec == Codec("HEVC"):
-            output += f" -strict -2"
+            output += " -strict -2"
         return output
 
     def _get_stream_settings(self):
-        output = " -map 0:v:0"  # Include first video stream
-        output += " -map 0:s?"  # Include all subtitle streams, if they exist
+        output = " -map 0:v"  # Include first video stream
+        if self.subtitle_language:
+            output += f" -map 0:s:m:language:{to_iso639_2(self.subtitle_language)}?"
+        else:
+            output += " -map 0:s?"  # Include all subtitle streams, if they exist
         output += " -c:s copy"
         return output
 
-    def _get_ffmpeg_codec(self):
+    def get_ffmpeg_codec(self):
         ffmpeg_codec = None
         if self.codec.format_name == "copy":
             ffmpeg_codec = "copy"

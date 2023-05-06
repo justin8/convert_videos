@@ -103,7 +103,7 @@ class VideoProcessor:
             return True
 
         split_filename = os.path.splitext(self.video.name)
-        codec_name = self.video_settings.codec.pretty_name or self.video_settings.codec.format_name
+        codec_name = self.video_settings.codec.pretty_name or self.video_settings.get_ffmpeg_codec()
         if split_filename[0].endswith(codec_name):
             log.debug(f"File '{self.video.name}' already matches the renaming format. Skipping")
             return True

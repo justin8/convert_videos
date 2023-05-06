@@ -41,7 +41,15 @@ def configure_logger(verbose):
 @click.option("--verbose", "-v", is_flag=True, help="Enable verbose log output")
 @click.option("--container", default="mkv", show_default=True, help="Specify a video container to convert the videos in to")
 @click.option("--dry-run", is_flag=True, help="Do not make actual changes")
-@click.option("--encoder", type=click.Choice(["software", "nvidia", "intel"]), default="software", show_default=True, help="Optionally use a harwdare encoder to speed things up.")
+@click.option(
+    "--encoder",
+    type=click.Choice(["software", "nvidia", "intel"]),
+    default="software",
+    show_default=True,
+    help="Optionally use a harwdare encoder to speed things up.",
+)
+@click.option("--audio-language", help="Only include audio streams in this language")
+@click.option("--subtitle-language", help="Only include subtitle streams in this language")
 def main(
     directories,
     force,
@@ -60,12 +68,18 @@ def main(
     container,
     dry_run,
     encoder,
+    audio_language,
+    subtitle_language,
 ):
     configure_logger(verbose)
 
-    video_settings = VideoSettings(codec=Codec(video_codec), quality=quality, preset=preset, width=width, encoder=encoder)
-    audio_settings = AudioSettings(codec=Codec(audio_codec), channels=audio_channels, bitrate=audio_bitrate,)
+    print(subtitle_language)
+    video_settings = VideoSettings(
+        codec=Codec(video_codec), quality=quality, preset=preset, width=width, encoder=encoder, subtitle_language=subtitle_language
+    )
+    audio_settings = AudioSettings(codec=Codec(audio_codec), channels=audio_channels, bitrate=audio_bitrate, language=audio_language)
 
+    print(video_settings.codec.__dict__)
 
     results = []
     for directory in directories:
