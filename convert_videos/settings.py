@@ -9,7 +9,7 @@ class AudioSettings:
     codec: Codec
     channels: int
     bitrate: int
-    language: str = None
+    language: str = None  # type: ignore
 
     def __post_init__(self):
         self.get_ffmpeg_codec()
@@ -45,9 +45,9 @@ class VideoSettings:
     codec: Codec
     quality: int
     preset: str
-    width: int = None  # Or None
+    width: int = None  # type: ignore # Or None
     encoder: str = "software"
-    subtitle_language: str = None
+    subtitle_language: str = None  # type: ignore
 
     def __post_init__(self):
         self.get_ffmpeg_codec()

@@ -46,7 +46,8 @@ def test_extra_output_args(target):
     result = target._generate_ffmpeg_settings("output")
     assert (
         result
-        == "-y -threads 0 -map 0:v -map 0:s? -c:s copy -vcodec libx265 -preset slow -crf 25 -strict -2 -map 0:a -acodec aac -ab 120k -ac 2 -foo"
+        == "-y -threads 0 -map 0:v -map 0:s? -c:s copy -vcodec libx265 -preset slow -crf 25"
+        + " -strict -2 -map 0:a -acodec aac -ab 120k -ac 2 -foo"
     )
 
 

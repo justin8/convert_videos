@@ -56,7 +56,7 @@ class VideoProcessor:
     in_place: bool = False
     extra_ffmpeg_input_args: str = ""
     extra_ffmpeg_output_args: str = ""
-    temp_directory: str = None
+    temp_directory: str = None  # type: ignore
 
     def _create_temp_file(self):
         return tempfile.mkstemp(dir=self.temp_directory, suffix=f".{self.container}")[1]

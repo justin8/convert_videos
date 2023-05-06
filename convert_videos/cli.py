@@ -3,7 +3,6 @@ import logging
 
 from prettytable import PrettyTable
 from video_utils import Codec
-from colorama import Fore
 
 from .processor import Processor, AudioSettings, VideoSettings
 
