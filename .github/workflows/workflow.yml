@@ -8,14 +8,8 @@ jobs:
     strategy:
       matrix:
         python: [3.7, 3.8, 3.9]
-    outputs:
-      branch: ${{ steps.extract_branch.outputs.branch }}
     steps:
       - uses: actions/checkout@v2
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
       - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v1
         with:
@@ -42,27 +36,24 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
     outputs:
-      commit: ${{ steps.tag_releases.outputs.commit }}
+      new_version: ${{ steps.tag_releases.outputs.new_version }}
     steps:
       - uses: actions/checkout@v2
       - name: Tag Releases
         id: tag_releases
         run: |
-          commits="$(cat "$GITHUB_EVENT_PATH" | jq -r '.commits[].id')"
-          for commit in $commits; do
-            version="$(git show $commit pyproject.toml | grep -Po "(?<=^\+version = \")[0-9\.]+")" ||:
-            echo "Version: '$version'"
-            if [[ -n $version ]]; then
-              echo Version was changed in commit $commit to $version. Tagging.
-              git tag $version
-              echo "commit=$commit" >> $GITHUB_OUTPUT
-            else
-              echo No version update in commit $commit
-            fi
-          done
+          version="$(grep -Po "(?<=^version = \")[0-9\.]+" pyproject.toml)"
+          echo "Current version: '$version'"
+          if git ls-remote --tags origin | grep "${version}$"; then
+            echo Current version has already been tagged. Skipping
+          else
+            echo Version has been updated. Tagging.
+            git tag $version
+            echo "new_version=$version" >> $GITHUB_OUTPUT
+          fi
       - name: Push Tags
         run: |
-          branch=${{ needs.test.outputs.branch }}
+          branch=${GITHUB_REF_NAME}
           if [[ $branch == master ]]; then
             echo "Pushing tags..."
             git push --tags || :
@@ -82,22 +73,22 @@ jobs:
           python-version: 3.9
       - name: Build
         run: |
-          branch=${{ needs.test.outputs.branch }}
-          commit=${{ needs.tag-releases.outputs.commit }}
-          if [[ $branch != master ]] || [[ ! $commit ]]; then
+          branch=${GITHUB_REF_NAME}
+          new_version=${{ needs.tag-releases.outputs.new_version }}
+          if [[ $branch != master ]] || [[ ! $new_version ]]; then
             echo "Not publishing changes outside master branch or when no version update has occurred"
             exit 0
           fi
-          git checkout $commit
+          git checkout $new_version
           pip install poetry
           poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
           poetry install
           poetry build
       - name: Publish
         run: |
-          branch=${{ needs.test.outputs.branch }}
-          commit=${{ needs.tag-releases.outputs.commit }}
-          if [[ $branch != master ]] || [[ ! $commit ]]; then
+          branch=${GITHUB_REF_NAME}
+          new_version=${{ needs.tag-releases.outputs.new_version }}
+          if [[ $branch != master ]] || [[ ! $new_version ]]; then
             echo "Not publishing changes outside master branch or when no version update has occurred"
             exit 0
           fi
