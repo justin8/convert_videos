@@ -23,7 +23,7 @@ def test_audio_language_filter_shortcode():
 
 
 def test_video_settings_avc():
-    target = VideoSettings(Codec("AVC"), 25, "slow", None)
+    target = VideoSettings(Codec("AVC"), 25, "slow")
     assert str(target) == " -map 0:v -map 0:s? -c:s copy -vcodec h264 -preset slow -crf 25"
 
 
@@ -38,7 +38,7 @@ def test_video_settings_avc_intel():
 
 
 def test_video_settings_hevc():
-    target = VideoSettings(Codec("HEVC"), 25, "slow", None)
+    target = VideoSettings(Codec("HEVC"), 25, "slow", None)  # type: ignore
     assert str(target) == " -map 0:v -map 0:s? -c:s copy -vcodec libx265 -preset slow -crf 25 -strict -2"
 
 
