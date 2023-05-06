@@ -38,12 +38,6 @@ class Status(Enum):
     def __str__(self):
         return titlecase(lowercase(self.name))
 
-    def colour(self):
-        c = "green"
-        if self == Status.FAILED:
-            c = "red"
-        return colour(c, str(self))
-
 
 @dataclass
 class VideoProcessor:
