@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [3.7, 3.8, 3.9, 3.10]
+        python: [3.7, 3.8, 3.9]
     outputs:
       branch: ${{ steps.extract_branch.outputs.branch }}
     steps:
@@ -51,10 +51,11 @@ jobs:
           commits="$(cat "$GITHUB_EVENT_PATH" | jq -r '.commits[].id')"
           for commit in $commits; do
             version="$(git show $commit pyproject.toml | grep -Po "(?<=^\+version = \")[\d\.]+")" ||:
-            if [[ $version ]]; then
+            echo "Version: '$version'"
+            if [[ -z $version ]]; then
               echo Version was changed in commit $commit to $version. Tagging.
               git tag $version
-              echo ::set-output name=commit::$commit
+              echo "commit=$commit" >> $GITHUB_OUTPUT
             else
               echo No version update in commit $commit
             fi
@@ -78,7 +79,7 @@ jobs:
       - name: Set up Python 3.8
         uses: actions/setup-python@v1
         with:
-          python-version: 3.8
+          python-version: 3.9
       - name: Build
         run: |
           branch=${{ needs.test.outputs.branch }}
