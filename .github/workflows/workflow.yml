@@ -50,9 +50,9 @@ jobs:
         run: |
           commits="$(cat "$GITHUB_EVENT_PATH" | jq -r '.commits[].id')"
           for commit in $commits; do
-            version="$(git show $commit pyproject.toml | grep -Po "(?<=^\+version = \")[\d\.]+")" ||:
+            version="$(git show $commit pyproject.toml | grep -Po "(?<=^\+version = \")[0-9\.]+")" ||:
             echo "Version: '$version'"
-            if [[ -z $version ]]; then
+            if [[ -n $version ]]; then
               echo Version was changed in commit $commit to $version. Tagging.
               git tag $version
               echo "commit=$commit" >> $GITHUB_OUTPUT

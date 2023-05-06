@@ -19,7 +19,7 @@ class Processor:
     in_place: bool = False
     extra_ffmpeg_input_args: str = ""
     extra_ffmpeg_output_args: str = ""
-    temp_directory: str = None # type: ignore
+    temp_directory: str = None  # type: ignore
     container: str = "mkv"
 
     def start(self):
