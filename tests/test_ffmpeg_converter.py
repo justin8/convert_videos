@@ -62,6 +62,12 @@ def test_generate_ffmpeg_input_settings_nvidia_hw(target):
     assert result == " -hwaccel cuvid"
 
 
+def test_generate_ffmpeg_input_settings_intel_hw(target):
+    target.video_settings.encoder = "intel"
+    result = target._generate_ffmpeg_settings("input")
+    assert result == " -hwaccel qsv -hwaccel_output_format qsv"
+
+
 def test_extra_input_args(target):
     target.extra_ffmpeg_input_args = "-foo"
     result = target._generate_ffmpeg_settings("input")
