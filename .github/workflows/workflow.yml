@@ -70,7 +70,7 @@ jobs:
       - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
+          python-version: "3.10"
       - name: Build
         run: |
           branch=${GITHUB_REF_NAME}
@@ -79,7 +79,6 @@ jobs:
             echo "Not publishing changes outside master branch or when no version update has occurred"
             exit 0
           fi
-          git checkout $new_version
           pip install poetry
           poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
           poetry install
