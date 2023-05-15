@@ -72,13 +72,10 @@ def main(
 ):
     configure_logger(verbose)
 
-    print(subtitle_language)
     video_settings = VideoSettings(
         codec=Codec(video_codec), quality=quality, preset=preset, width=width, encoder=encoder, subtitle_language=subtitle_language
     )
     audio_settings = AudioSettings(codec=Codec(audio_codec), channels=audio_channels, bitrate=audio_bitrate, language=audio_language)
-
-    print(video_settings.codec.__dict__)
 
     results = []
     for directory in directories:

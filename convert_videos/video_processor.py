@@ -27,9 +27,6 @@ class Status(Enum):
     # (e.g. appending the output codec) and this is that converted file
     ALREADY_PROCESSED = auto()
 
-    # Force can override already in desired format, but not if both original and converted files already exist
-    FORCE_CONVERTED = auto()
-
     # The file is already using the target format, can be overridden with --force
     IN_DESIRED_FORMAT = auto()
 
