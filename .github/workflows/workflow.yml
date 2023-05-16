@@ -34,7 +34,7 @@ jobs:
   tag-releases:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     outputs:
       new_version: ${{ steps.tag_releases.outputs.new_version }}
     steps:
@@ -54,17 +54,17 @@ jobs:
       - name: Push Tags
         run: |
           branch=${GITHUB_REF_NAME}
-          if [[ $branch == master ]]; then
+          if [[ $branch == main ]]; then
             echo "Pushing tags..."
             git push --tags || :
           else
-            echo "Skipping pushing tags as this is not the master branch"
+            echo "Skipping pushing tags as this is not the main branch"
           fi
 
   publish:
     runs-on: ubuntu-latest
     needs: [test, tag-releases]
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.10
@@ -75,8 +75,8 @@ jobs:
         run: |
           branch=${GITHUB_REF_NAME}
           new_version=${{ needs.tag-releases.outputs.new_version }}
-          if [[ $branch != master ]] || [[ ! $new_version ]]; then
-            echo "Not publishing changes outside master branch or when no version update has occurred"
+          if [[ $branch != main ]] || [[ ! $new_version ]]; then
+            echo "Not publishing changes outside main branch or when no version update has occurred"
             exit 0
           fi
           pip install poetry
@@ -87,8 +87,8 @@ jobs:
         run: |
           branch=${GITHUB_REF_NAME}
           new_version=${{ needs.tag-releases.outputs.new_version }}
-          if [[ $branch != master ]] || [[ ! $new_version ]]; then
-            echo "Not publishing changes outside master branch or when no version update has occurred"
+          if [[ $branch != main ]] || [[ ! $new_version ]]; then
+            echo "Not publishing changes outside main branch or when no version update has occurred"
             exit 0
           fi
           poetry publish
