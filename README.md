@@ -1,7 +1,10 @@
 # Convert Videos
 
-![Test Status](https://github.com/justin8/convert_videos/workflows/Workflow/badge.svg?branch=master)
+[![Supported Python Versions](https://img.shields.io/pypi/pyversions/convert_videos)](https://pypi.org/project/convert_videos/) [![PyPI version](https://badge.fury.io/py/convert_videos.svg)](https://badge.fury.io/py/convert_videos)
+
+[![Workflow](https://github.com/justin8/convert_videos/actions/workflows/workflow.yml/badge.svg)](https://github.com/convert_videos/video_utils/actions/workflows/workflow.yml)
 [![codecov](https://codecov.io/gh/justin8/convert_videos/branch/master/graph/badge.svg)](https://codecov.io/gh/justin8/convert_videos)
+[![Downloads](https://pepy.tech/badge/convert_videos/month)](https://pepy.tech/project/convert_videos)
 
 This tool allows bulk conversion of videos using ffmpeg.
 
