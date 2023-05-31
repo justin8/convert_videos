@@ -12,6 +12,63 @@ By default it will append the codec name to the file, e.g. `Best Movie Ever.avi`
 
 Videos are only converted if they do not already match the desired codec, allowing you to process a folder of mixed format files and only convert the ones you desire. This can optionally be overridden.
 
+## Usage
+
+```
+Usage: convert-videos [OPTIONS] DIRECTORIES...
+
+Options:
+  -i, --in-place                  Replace the original files instead of
+                                  appending the new codec name
+  -f, --force                     Force conversion even if the format of the
+                                  file already matches the desired format
+  --video-codec TEXT              A target video codec. Supported codecs:
+                                  HEVC, AVC  [default: HEVC]
+  -q, --quality INTEGER           The quantizer quality level to use.
+                                  [default: 24]
+  -p, --preset TEXT               FFmpeg preset to use.  [default: medium]
+  -w, --width INTEGER             Specify a new width to enable resizing of
+                                  the video
+  --extra-input-args TEXT         Specify any extra arguments you would like
+                                  to pass to FFMpeg input here
+  --extra-output-args TEXT        Specify any extra arguments you would like
+                                  to pass to FFMpeg output here
+  --audio-codec TEXT              A target audio codec  [default: AAC]
+  --audio-channels INTEGER        The number of channels to mux sound in to
+                                  [default: 2]
+  --audio-bitrate INTEGER         The bitrate to use for the audio codec
+                                  [default: 160]
+  --temp-dir TEXT                 Specify a temporary directory to use during
+                                  conversions instead of the system default
+  -v, --verbose                   Enable verbose log output
+  --container TEXT                Specify a video container to convert the
+                                  videos in to  [default: mkv]
+  --dry-run                       Do not make actual changes
+  --encoder [software|nvidia|intel]
+                                  Optionally use a harwdare encoder to speed
+                                  things up.  [default: software]
+  --audio-language TEXT           Only include audio streams in this language
+  --subtitle-language TEXT        Only include subtitle streams in this
+                                  language
+  -h, --help                      Show this message and exit.
+```
+
+## Autocomplete
+
+To enable auto-completion:
+
+**zsh**
+Add the below to `~/.zshrc`
+`eval "$(_CONVERT_VIDEOS_COMPLETE=zsh_source convert-videos)"`
+
+**bash**
+Add the below to `~/.bashrc`
+`eval "$(_CONVERT_VIDEOS_COMPLETE=bash_source convert-videos)"`
+
+**fish**
+Add the following to `~/.config/fish/completions/convert-videos.fish`
+`eval (env _CONVERT_VIDEOS_COMPLETE=fish_source convert-videos)`
+
 ## File output
 
 ### Container
@@ -35,14 +92,15 @@ Videos can be resized automatically by providing a width. Height is automaticall
 Hardware acceleration is supported on nVidia and Intel devices.
 
 Caveats for nVidia:
+
 - Conversions use constqp mode for the quality setting instead of CRF, as nvenc does not support CRF
 - b-frames are not currently supported; nvenc itself supports them on 20xx+ series graphics cards.
 
-
 Caveats for Intel:
+
 - Conversions use global_quality mode as CRF isn't supported on Intel hardware. ICQ and LA-ICQ are apparently better, but only supported on Windows
 - Look-ahead is only supported on x264 (not HEVC)
-
+- There is a bug (current as of 2023-05) where all videos converted with Intel's QSV with FFMPEG have a single I-frame at the start and no more; so currently this is unsuable
 
 ## Audio output
 
@@ -50,61 +108,6 @@ Default settings is 160kbps 2 channel AAC.
 
 All audio streams will be included by default unless a language filter is specified with `--audio-language`.
 
-
 ## Subtitles
 
 All subtitles will be copied from the source if they exist unless a language filter is specified with `--subtitle-language`.
-
-## Usage
-
-```
-Usage: convert-videos [OPTIONS] DIRECTORIES...
-
-Options:
-  -i, --in-place                  Replace the original files instead of
-                                  appending the new codec name
-
-  -f, --force                     Force conversion even if the format of the
-                                  file already matches the desired format
-
-  --video-codec TEXT              A target video codec. Supported codecs:
-                                  HEVC, AVC  [default: HEVC]
-
-  -q, --quality INTEGER           The quantizer quality level to use.
-                                  [default: 24]
-
-  -p, --preset TEXT               FFmpeg preset to use.  [default: medium]
-  -w, --width INTEGER             Specify a new width to enable resizing of
-                                  the video
-
-  --extra-input-args TEXT         Specify any extra arguments you would like
-                                  to pass to FFMpeg input here
-
-  --extra-output-args TEXT        Specify any extra arguments you would like
-                                  to pass to FFMpeg output here
-
-  --audio-codec TEXT              A target audio codec  [default: AAC]
-  --audio-channels INTEGER        The number of channels to mux sound in to
-                                  [default: 2]
-
-  --audio-bitrate INTEGER         The bitrate to use for the audio codec
-                                  [default: 160]
-
-  --temp-dir TEXT                 Specify a temporary directory to use during
-                                  conversions instead of the system default
-
-  -v, --verbose                   Enable verbose log output
-  --container TEXT                Specify a video container to convert the
-                                  videos in to  [default: mkv]
-
-  --dry-run                       Do not make actual changes
-  --encoder [software|nvidia|intel]
-                                  Optionally use a harwdare encoder to speed
-                                  things up.  [default: software]
-
-  --audio-language TEXT           Only include audio streams in this language
-  --subtitle-language TEXT        Only include subtitle streams in this
-                                  language
-
-  -h, --help                      Show this message and exit.
-```
