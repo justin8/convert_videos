@@ -88,6 +88,11 @@ class VideoSettings:
             if self.codec.format_name == "AVC":
                 # Look-ahead is supported for x264 and is preferable for better quality
                 output += " -look_ahead 1"
+
+            # Fix for a bug in Intel QSV driver that causes it to only create a single I-frame at the start of a
+            # video. Forcing i-frame generation every 120 frames to counter this
+            # Source: https://github.com/intel/media-driver/issues/1576#issuecomment-1609128922
+            output += " -g:v 120"
         else:
             output = f" -crf {self.quality}"
         return output
