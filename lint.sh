@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 flake8="poetry run flake8"
 
 # stop the build if there are Python syntax errors or undefined names
