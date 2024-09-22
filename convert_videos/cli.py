@@ -2,6 +2,7 @@ import click
 import logging
 
 from prettytable import PrettyTable
+from convert_videos.util import check_hardware_acceleration_support
 from video_utils import Codec
 
 from .processor import Processor, AudioSettings, VideoSettings
@@ -42,8 +43,8 @@ def configure_logger(verbose):
 @click.option("--dry-run", is_flag=True, help="Do not make actual changes")
 @click.option(
     "--encoder",
-    type=click.Choice(["software", "nvidia", "intel"]),
-    default="software",
+    type=click.Choice(["auto-detect", "software", "nvidia", "intel"]),
+    default="auto-detect",
     show_default=True,
     help="Optionally use a harwdare encoder to speed things up.",
 )
@@ -71,6 +72,16 @@ def main(
     subtitle_language,
 ):
     configure_logger(verbose)
+
+    if encoder == "auto-detect":
+        log.debug("Auto detecting hardware acceleration support")
+        hardware_support = check_hardware_acceleration_support()
+        encoder = "software"
+        if hardware_support["intel_quicksync"]:
+            encoder = "intel"
+        if hardware_support["nvidia_nvenc"]:
+            encoder = "nvidia"
+        log.debug(f"Using encoder: {encoder}")
 
     video_settings = VideoSettings(
         codec=Codec(video_codec), quality=quality, preset=preset, width=width, encoder=encoder, subtitle_language=subtitle_language
