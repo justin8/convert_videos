@@ -30,6 +30,9 @@ class Status(Enum):
     # The file is already using the target format, can be overridden with --force
     IN_DESIRED_FORMAT = auto()
 
+    # The file is below the minimum size and will not be processed
+    BELOW_MINIMUM_SIZE = auto()
+
     FAILED = auto()
 
     def __str__(self):
@@ -54,6 +57,7 @@ class VideoProcessor:
     extra_ffmpeg_input_args: str = ""
     extra_ffmpeg_output_args: str = ""
     temp_directory: str = None  # type: ignore
+    minimum_size: int = 0  # Minimum file size in megabytes to process
 
     def _create_temp_file(self):
         return tempfile.mkstemp(dir=self.temp_directory, suffix=f".{self.container}")[1]
@@ -62,6 +66,9 @@ class VideoProcessor:
         return f"Video: {self.video.full_path}, format: {self.video.codec.pretty_name}, quality: {self.video.quality}"
 
     def process(self):
+        if self._is_below_minimum_size():
+            return Status.BELOW_MINIMUM_SIZE
+
         if self.video.codec == self.video_settings.codec:
             log.debug(f"'{self.video.name}' is already in the desired format")
             if not self.force:
@@ -92,6 +99,13 @@ class VideoProcessor:
             log.error(e)
             traceback.print_exc()
             return Status.FAILED
+
+    def _is_below_minimum_size(self):
+        if self.minimum_size > 0:
+            file_size_mb = os.path.getsize(self.video.full_path) / (1024 * 1024)
+            if file_size_mb < self.minimum_size:
+                return True
+        return False
 
     def already_processed(self):
         renamed_path = self.renamed_path()

@@ -50,6 +50,7 @@ def configure_logger(verbose):
 )
 @click.option("--audio-language", help="Only include audio streams in this language")
 @click.option("--subtitle-language", help="Only include subtitle streams in this language")
+@click.option("--minimum-size", type=int, help="Minimum file size in megabytes to process")
 def main(
     directories,
     force,
@@ -70,6 +71,7 @@ def main(
     encoder,
     audio_language,
     subtitle_language,
+    minimum_size,
 ):
     configure_logger(verbose)
 
@@ -101,6 +103,7 @@ def main(
             temp_directory=temp_dir,
             container=container,
             dry_run=dry_run,
+            minimum_size=minimum_size,
         ).start()
 
     _print_conversion_results(results)

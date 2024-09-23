@@ -174,3 +174,30 @@ def test_converted(m1, m2, m3, m4, target):
 def test_failed(m1, m2, m3, m4, target):
     response = target.process()
     assert response == Status.FAILED
+
+
+@patch.object(VideoProcessor, "_is_below_minimum_size", return_value=True)
+def test_below_minimum_size(mock_is_below_minimum_size, target):
+    response = target.process()
+    assert response == Status.BELOW_MINIMUM_SIZE
+
+
+@patch("os.path.getsize", return_value=100 * 1024 * 1024)
+def test_is_below_minimum_size_true(mock_getsize, target):
+    target.minimum_size = 200
+    result = target._is_below_minimum_size()
+    assert result is True
+
+
+@patch("os.path.getsize", return_value=300 * 1024 * 1024)
+def test_is_below_minimum_size_false(mock_getsize, target):
+    target.minimum_size = 200
+    result = target._is_below_minimum_size()
+    assert result is False
+
+
+@patch("os.path.getsize", return_value=300 * 1024 * 1024)
+def test_is_below_minimum_size_zero(mock_getsize, target):
+    target.minimum_size = 0
+    result = target._is_below_minimum_size()
+    assert result is False
