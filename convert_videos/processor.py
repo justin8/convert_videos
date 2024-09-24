@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import logging
 
+import os
 from video_utils import FileMap
 
 from .video_processor import VideoProcessor
@@ -47,8 +48,11 @@ class Processor:
             log.debug(f"Processing video '{video.name}' ({len(videos_processed)}/{total_videos})")
             videos_processed.append(video)
 
+            from .video_processor import Status
             status = item.process()
-            return_values.append({"video": video, "status": status})
+            before_size = video.size / (1024 * 1024)  # Convert to MB
+            after_size = os.path.getsize(item.renamed_path()) / (1024 * 1024) if status == Status.CONVERTED else 'n/a'
+            return_values.append({"video": video, "status": status, "before_size": before_size, "after_size": after_size})
         log.info(f"Finished processing files in directory {directory}")
         return return_values
 

@@ -99,11 +99,11 @@ def main(
 
 
 def _print_conversion_results(results):
-    table = PrettyTable(["Video", "Original Codec", "Status"])
+    table = PrettyTable(["Video", "Original Codec", "Status", "Size Before (MB)", "Size After (MB)"])
 
     for result in results:
         codec = result["video"].codec.pretty_name
         if codec is None:
             codec = "Unknown"
-        table.add_row([result["video"].full_path, codec, result["status"].colour()])
+        table.add_row([result["video"].full_path, codec, result["status"].colour(), f"{result['before_size']:.2f}", f"{result['after_size'] if result['after_size'] == 'n/a' else f'{result['after_size']:.2f}'}"])
     print(table)
