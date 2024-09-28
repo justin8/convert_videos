@@ -9,6 +9,13 @@ By default it will append the codec name to the file, e.g. `Best Movie Ever.avi`
 
 Videos are only converted if they do not already match the desired codec, allowing you to process a folder of mixed format files and only convert the ones you desire. This can optionally be overridden.
 
+## Auto-completion
+
+To enable autocompletion, do the following:
+1. `_CONVERT_VIDEOS_COMPLETE=zsh_source convert-videos > ~/.convert-videos-completion.zsh`
+2. Add the following to your `~/.zshrc`: `source ~/.convert-videos-completion.zsh`
+
+
 ## File output
 
 ### Container
