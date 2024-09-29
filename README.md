@@ -44,12 +44,13 @@ Options:
   --container TEXT                Specify a video container to convert the
                                   videos in to  [default: mkv]
   --dry-run                       Do not make actual changes
-  --encoder [software|nvidia|intel]
-                                  Optionally use a harwdare encoder to speed
-                                  things up.  [default: software]
+  --encoder [auto-detect|software|nvidia|intel]
+                                  Optionally use a hardware encoder to speed
+                                  things up.  [default: auto-detect]
   --audio-language TEXT           Only include audio streams in this language
   --subtitle-language TEXT        Only include subtitle streams in this
                                   language
+  --minimum-size INTEGER          Minimum file size in megabytes to process
   -h, --help                      Show this message and exit.
 ```
 
@@ -93,14 +94,15 @@ Hardware acceleration is supported on nVidia and Intel devices.
 
 Caveats for nVidia:
 
-- Conversions use constqp mode for the quality setting instead of CRF, as nvenc does not support CRF
+- Conversions use constqp mode for the quality setting instead of CRF, as nvenc does not support CRF.
 - b-frames are not currently supported; nvenc itself supports them on 20xx+ series graphics cards.
 
 Caveats for Intel:
 
-- Conversions use global_quality mode as CRF isn't supported on Intel hardware. ICQ and LA-ICQ are apparently better, but only supported on Windows
-- Look-ahead is only supported on x264 (not HEVC)
-- There is a bug (current as of 2023-05) where all videos converted with Intel's QSV with FFMPEG have a single I-frame at the start and no more; so currently this is unsuable
+- Conversions use global_quality mode as CRF isn't supported on Intel hardware. ICQ and LA-ICQ are apparently better, but only supported on Windows.
+- Look-ahead is only supported on x264 (not HEVC).
+- There is a bug (current as of 2023-05) where all videos converted with Intel's QSV with FFMPEG have a single I-frame at the start and no more; so currently this is being worked around by enforcing a maximum time between I-frames which creates usable videos.
+- 10-bit HEVC videos often cause issues with the Intel decoder.
 
 ## Audio output
 

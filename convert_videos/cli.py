@@ -46,7 +46,7 @@ def configure_logger(verbose):
     type=click.Choice(["auto-detect", "software", "nvidia", "intel"]),
     default="auto-detect",
     show_default=True,
-    help="Optionally use a harwdare encoder to speed things up.",
+    help="Optionally use a hardware encoder to speed things up.",
 )
 @click.option("--audio-language", help="Only include audio streams in this language")
 @click.option("--subtitle-language", help="Only include subtitle streams in this language")
