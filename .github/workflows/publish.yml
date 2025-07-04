@@ -1,0 +1,96 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - main
+
+# Add permissions for the GITHUB_TOKEN
+permissions:
+  contents: write # Needed for pushing tags
+
+jobs:
+  build-and-test:
+    uses: ./.github/workflows/build-test.yml
+
+  tag-releases:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    outputs:
+      new_version: ${{ steps.tag_releases.outputs.new_version }}
+      version_changed: ${{ steps.tag_releases.outputs.version_changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Need the previous commit to compare
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check version change
+        id: tag_releases
+        run: |
+          # Install tomli for parsing pyproject.toml
+          pip install tomli
+
+          # Get current version
+          current_version=$(python -c "import tomli; print(tomli.load(open('pyproject.toml', 'rb'))['project']['version'])")
+          echo "Current version: $current_version"
+
+          # Check previous commit's version
+          git checkout HEAD^
+          prev_version=$(python -c "import tomli; print(tomli.load(open('pyproject.toml', 'rb'))['project']['version'])")
+          git checkout -
+          echo "Previous version: $prev_version"
+
+          if [ "$current_version" != "$prev_version" ]; then
+            echo "Version changed from $prev_version to $current_version"
+            echo "Version has been updated. Tagging."
+            git tag "$current_version"
+            echo "new_version=$current_version" >> $GITHUB_OUTPUT
+            echo "version_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "Version unchanged. Skipping."
+            echo "version_changed=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Push Tags
+        run: |
+          git push --tags || :
+
+  publish:
+    needs: [build-and-test, tag-releases]
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' && needs.tag-releases.outputs.version_changed == 'true' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Download built package
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+
+      - name: Files
+        run: find .
+
+      - name: Upload code coverage
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: |
+          bash <(curl -s https://codecov.io/bash) -Z || echo 'Codecov failed to upload'
+
+      - name: Publish package
+        run: uv publish --token ${{ secrets.PYPI_TOKEN }}

@@ -50,7 +50,7 @@ def configure_logger(verbose):
 )
 @click.option("--audio-language", help="Only include audio streams in this language")
 @click.option("--subtitle-language", help="Only include subtitle streams in this language")
-@click.option("--minimum-size", type=int, help="Minimum file size in megabytes to process")
+@click.option("--minimum-size", type=int, default=0, help="Minimum file size in megabytes to process")
 def main(
     directories,
     force,
