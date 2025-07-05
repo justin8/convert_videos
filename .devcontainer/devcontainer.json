@@ -1,0 +1,17 @@
+{
+  "name": "Convert Videos",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python"
+      ]
+    }
+  },
+  "postCreateCommand": "curl -Ls https://astral.sh/uv/install.sh | bash && uv sync"
+}
