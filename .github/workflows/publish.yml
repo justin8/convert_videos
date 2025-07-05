@@ -83,14 +83,10 @@ jobs:
         with:
           name: dist
 
-      - name: Files
-        run: find .
-
-      - name: Upload code coverage
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: |
-          bash <(curl -s https://codecov.io/bash) -Z || echo 'Codecov failed to upload'
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Publish package
         run: uv publish --token ${{ secrets.PYPI_TOKEN }}

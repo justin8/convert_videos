@@ -1,6 +1,6 @@
 [project]
 name = "convert_videos"
-version = "2.9.9"
+version = "2.9.10"
 description = "This tool allows bulk conversion of videos using ffmpeg"
 authors = [{ name = "Justin Dray", email = "justin@dray.be" }]
 requires-python = ">=3.12.0,<4"
