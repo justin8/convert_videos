@@ -5,6 +5,7 @@ import tempfile
 import traceback
 from dataclasses import dataclass
 from enum import Enum, auto
+from os.path import basename, dirname
 
 from stringcase import lowercase, titlecase
 from video_utils import Video
@@ -78,16 +79,16 @@ class VideoProcessor:
 
     def process(self):
         if self._is_below_minimum_size():
-            return Status.BELOW_MINIMUM_SIZE
+            return {"status": Status.BELOW_MINIMUM_SIZE}
 
         if self.video.codec == self.video_settings.codec:
             log.debug(f"'{self.video.name}' is already in the desired format")
             if not self.force:
-                return Status.IN_DESIRED_FORMAT
+                return {"status": Status.IN_DESIRED_FORMAT}
             log.debug("Forcing conversion anyway (--force is enabled)")
 
         if self.already_processed():
-            return Status.ALREADY_PROCESSED
+            return {"status": Status.ALREADY_PROCESSED}
 
         with self._create_temp_file() as self.temp_file:
             try:
@@ -102,9 +103,16 @@ class VideoProcessor:
                 )
                 converter.process()
                 self._move_output_video()
+                output_path = (
+                    self.in_place_file_path() if self.in_place else self.renamed_path()
+                )
+                if not self.dry_run:
+                    converted_video = Video(basename(output_path), dirname(output_path))
+                else:
+                    converted_video = None
                 if self.dry_run:
-                    return Status.WOULD_CONVERT
-                return Status.CONVERTED
+                    return {"status": Status.WOULD_CONVERT}
+                return {"status": Status.CONVERTED, "converted_video": converted_video}
             except Exception as e:
                 log.error(
                     colour(
@@ -113,7 +121,7 @@ class VideoProcessor:
                 )
                 log.error(e)
                 traceback.print_exc()
-                return Status.FAILED
+                return {"status": Status.FAILED}
 
     def _is_below_minimum_size(self):
         if self.minimum_size_per_hour_mb and self.video.duration and self.video.size_b:

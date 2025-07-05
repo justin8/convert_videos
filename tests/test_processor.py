@@ -1,10 +1,12 @@
-from convert_videos import processor, Processor, AudioSettings, VideoSettings
-from convert_videos.video_processor import Status
-from video_utils import Codec, Video
-import pytest
-from mock import patch, NonCallableMagicMock
-from os import path
 import pickle
+from os import path
+
+import pytest
+from mock import NonCallableMagicMock, patch
+from video_utils import Codec, Video
+
+from convert_videos import AudioSettings, Processor, VideoSettings, processor
+from convert_videos.video_processor import Status
 
 
 @pytest.fixture
@@ -66,6 +68,8 @@ def test_convert_all(mock_convert_files_in_directory, target, file_map_fixture):
     target._file_map = file_map_fixture
     target._convert_all()
     assert mock_convert_files_in_directory.call_count == 2
+
+    # The pickle file contains paths from the original system, so we check for those
     mock_convert_files_in_directory.assert_any_call(
         "/Users/jdray/git/home/convert_videos/tests/testData/foo"
     )
@@ -78,11 +82,14 @@ def test_convert_all(mock_convert_files_in_directory, target, file_map_fixture):
 
 
 @patch.object(Processor, "_get_video_processor")
+@patch("video_utils.video.Video.get_current_size", return_value=1000)
 def test_convert_files_in_directory_status_passthrough(
-    mock_get_video_processor, target, file_map_fixture
+    mock_get_current_size, mock_get_video_processor, target, file_map_fixture
 ):
-    mock_get_video_processor().process.return_value = Status.FAILED
+    mock_get_video_processor().process.return_value = {"status": Status.FAILED}
     target._file_map = file_map_fixture
+
+    # Use the path from the pickle file
     response = target._convert_files_in_directory(
         "/Users/jdray/git/home/convert_videos/tests/testData/foo"
     )

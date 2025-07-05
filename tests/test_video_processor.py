@@ -166,22 +166,25 @@ def test_in_desired_format(target):
     target.video.codec = Codec("HEVC")
     target.video_settings.codec = Codec("HEVC")
     response = target.process()
-    assert response == Status.IN_DESIRED_FORMAT
+    assert response["status"] == Status.IN_DESIRED_FORMAT
 
 
 @patch.object(VideoProcessor, "already_processed", return_value=True)
 def test_already_processed(mock_already_processed, target):
     response = target.process()
-    assert response == Status.ALREADY_PROCESSED
+    assert response["status"] == Status.ALREADY_PROCESSED
 
 
 @patch.object(VideoProcessor, "already_processed", return_value=False)
 @patch.object(VideoProcessor, "_create_temp_file")
 @patch("convert_videos.video_processor.FFmpegConverter")
 @patch.object(VideoProcessor, "_move_output_video")
-def test_converted(m1, m2, m3, m4, target):
+@patch("convert_videos.video_processor.Video")
+def test_converted(mock_video, m1, m2, m3, m4, target):
+    mock_video.return_value = Video("converted.mkv", "/asdf/foo")
     response = target.process()
-    assert response == Status.CONVERTED
+    assert response["status"] == Status.CONVERTED
+    assert "converted_video" in response
 
 
 @patch.object(VideoProcessor, "already_processed", return_value=False)
@@ -190,13 +193,13 @@ def test_converted(m1, m2, m3, m4, target):
 @patch.object(VideoProcessor, "_move_output_video")
 def test_failed(m1, m2, m3, m4, target):
     response = target.process()
-    assert response == Status.FAILED
+    assert response["status"] == Status.FAILED
 
 
 @patch.object(VideoProcessor, "_is_below_minimum_size", return_value=True)
 def test_below_minimum_size(mock_is_below_minimum_size, target):
     response = target.process()
-    assert response == Status.BELOW_MINIMUM_SIZE
+    assert response["status"] == Status.BELOW_MINIMUM_SIZE
 
 
 def test_is_below_minimum_size_per_hour_true(target):

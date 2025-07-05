@@ -52,12 +52,19 @@ class Processor:
             log.debug(f"Video details: {video}")
             videos_processed.append(video)
 
-            status = item.process()
+            result = item.process()
+            status = result["status"]
             if status == Status.BELOW_MINIMUM_SIZE:
                 log.debug(
                     f"Video '{video.name}' is below the minimum size per hour and will not be processed."
                 )
-            return_values.append({"video": video, "status": status})
+            return_dict = {
+                "video": video,
+                "status": status,
+            }
+            if "converted_video" in result:
+                return_dict["converted_video"] = result["converted_video"]
+            return_values.append(return_dict)
         log.info(f"Finished processing files in directory {directory}")
         return return_values
 
