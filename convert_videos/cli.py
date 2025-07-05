@@ -1,10 +1,12 @@
 import logging
 
 import click
-from prettytable import PrettyTable
 from video_utils import Codec
 
-from convert_videos.util import check_hardware_acceleration_support
+from convert_videos.util import (
+    check_hardware_acceleration_support,
+    print_conversion_results,
+)
 
 from .processor import AudioSettings, Processor, VideoSettings
 
@@ -118,7 +120,6 @@ def configure_logger(verbose):
 @click.option(
     "--subtitle-language", help="Only include subtitle streams in this language"
 )
-
 @click.option(
     "--minimum-size-per-hour",
     type=int,
@@ -187,26 +188,7 @@ def main(
             temp_directory=temp_dir,
             container=container,
             dry_run=dry_run,
-
             minimum_size_per_hour_mb=minimum_size_per_hour,
         ).start()
 
-    _print_conversion_results(results)
-
-
-def _print_conversion_results(results):
-    table = PrettyTable(["Video", "Original Codec", "Current Size", "Status"])
-
-    for result in results:
-        codec = result["video"].codec.pretty_name
-        if codec is None:
-            codec = "Unknown"
-        table.add_row(
-            [
-                result["video"].name,
-                codec,
-                str(result["video"].size_b // (1024 * 1024)) + " MB",
-                result["status"].colour(),
-            ]
-        )
-    print(table)
+    print_conversion_results(results)

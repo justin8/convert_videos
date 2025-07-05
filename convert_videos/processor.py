@@ -73,6 +73,5 @@ class Processor:
             in_place=self.in_place,
             dry_run=self.dry_run,
             force=self.force,
-
             minimum_size_per_hour_mb=self.minimum_size_per_hour_mb,
         )

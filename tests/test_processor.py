@@ -109,7 +109,6 @@ def test_get_video_processor_with_minimum_size_per_hour(mock_video_processor, ta
         in_place=target.in_place,
         dry_run=target.dry_run,
         force=target.force,
-
         minimum_size_per_hour_mb=100,
     )
     assert isinstance(result, NonCallableMagicMock)
