@@ -11,10 +11,20 @@ import pickle
 def target():
     audio_settings = AudioSettings(codec=Codec("AAC"), channels=2, bitrate=120)
 
-    video_settings = VideoSettings(codec=Codec("HEVC"), quality=25, preset="slow", encoder="software",)
+    video_settings = VideoSettings(
+        codec=Codec("HEVC"),
+        quality=25,
+        preset="slow",
+        encoder="software",
+    )
 
     return Processor(
-        directory="/tmp/foo", force=False, video_settings=video_settings, audio_settings=audio_settings, in_place=False, container="mkv"
+        directory="/tmp/foo",
+        force=False,
+        video_settings=video_settings,
+        audio_settings=audio_settings,
+        in_place=False,
+        container="mkv",
     )
 
 
@@ -56,18 +66,26 @@ def test_convert_all(mock_convert_files_in_directory, target, file_map_fixture):
     target._file_map = file_map_fixture
     target._convert_all()
     assert mock_convert_files_in_directory.call_count == 2
-    mock_convert_files_in_directory.assert_any_call("/Users/jdray/git/home/convert_videos/tests/testData/foo")
-    mock_convert_files_in_directory.assert_any_call("/Users/jdray/git/home/convert_videos/tests/testData/bar")
+    mock_convert_files_in_directory.assert_any_call(
+        "/Users/jdray/git/home/convert_videos/tests/testData/foo"
+    )
+    mock_convert_files_in_directory.assert_any_call(
+        "/Users/jdray/git/home/convert_videos/tests/testData/bar"
+    )
 
     # Confirm we return the results from convert_files_in_directory in a list
     assert target.results == ["some-response", "some-response"]
 
 
 @patch.object(Processor, "_get_video_processor")
-def test_convert_files_in_directory_status_passthrough(mock_get_video_processor, target, file_map_fixture):
+def test_convert_files_in_directory_status_passthrough(
+    mock_get_video_processor, target, file_map_fixture
+):
     mock_get_video_processor().process.return_value = Status.FAILED
     target._file_map = file_map_fixture
-    response = target._convert_files_in_directory("/Users/jdray/git/home/convert_videos/tests/testData/foo")
+    response = target._convert_files_in_directory(
+        "/Users/jdray/git/home/convert_videos/tests/testData/foo"
+    )
 
     failures = [x for x in response if x["status"] == Status.FAILED]
 
@@ -75,12 +93,18 @@ def test_convert_files_in_directory_status_passthrough(mock_get_video_processor,
 
 
 @patch.object(Processor, "_get_video_processor")
-def test_convert_files_in_directory_below_minimum_size(mock_get_video_processor, target, file_map_fixture):
+def test_convert_files_in_directory_below_minimum_size(
+    mock_get_video_processor, target, file_map_fixture
+):
     mock_get_video_processor().process.return_value = Status.BELOW_MINIMUM_SIZE
     target.minimum_size = 100
     target._file_map = file_map_fixture
-    response = target._convert_files_in_directory("/Users/jdray/git/home/convert_videos/tests/testData/foo")
+    response = target._convert_files_in_directory(
+        "/Users/jdray/git/home/convert_videos/tests/testData/foo"
+    )
 
-    below_minimum_size = [x for x in response if x["status"] == Status.BELOW_MINIMUM_SIZE]
+    below_minimum_size = [
+        x for x in response if x["status"] == Status.BELOW_MINIMUM_SIZE
+    ]
 
     assert len(below_minimum_size) == 6

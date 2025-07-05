@@ -1,10 +1,10 @@
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
 
 from video_utils import FileMap
 
-from .video_processor import VideoProcessor, Status
-from .settings import VideoSettings, AudioSettings
+from .settings import AudioSettings, VideoSettings
+from .video_processor import Status, VideoProcessor
 
 log = logging.getLogger()
 
@@ -21,7 +21,7 @@ class Processor:
     extra_ffmpeg_output_args: str = ""
     temp_directory: str = None  # type: ignore
     container: str = "mkv"
-    minimum_size: int = 0  # Minimum file size in megabytes to process
+    minimum_size_b: int = 0  # Minimum file size in megabytes to process
 
     def start(self):
         self._load_file_map()
@@ -45,13 +45,17 @@ class Processor:
         total_videos = len(self._file_map.contents[directory])
         for video in self._file_map.contents[directory]:
             item = self._get_video_processor(video)
-            log.debug(f"Processing video '{video.name}' ({len(videos_processed)}/{total_videos})")
+            log.debug(
+                f"Processing video '{video.name}' ({len(videos_processed)}/{total_videos})"
+            )
             log.debug(f"Video details: {video}")
             videos_processed.append(video)
 
             status = item.process()
             if status == Status.BELOW_MINIMUM_SIZE:
-                log.debug(f"Video '{video.name}' is below the minimum size ({self.minimum_size} MB) and will not be processed.")
+                log.debug(
+                    f"Video '{video.name}' is below the minimum size ({self.minimum_size_b // (1024 * 1024)} MB) and will not be processed."
+                )
             return_values.append({"video": video, "status": status})
         log.info(f"Finished processing files in directory {directory}")
         return return_values
@@ -68,5 +72,5 @@ class Processor:
             in_place=self.in_place,
             dry_run=self.dry_run,
             force=self.force,
-            minimum_size=self.minimum_size,
+            minimum_size_b=self.minimum_size_b,
         )

@@ -17,7 +17,9 @@ from convert_videos import ffmpeg_converter
 def target(mock_remove, mock_isdir, mock_access, mock_isfile, mock_exists):
     audio_settings = AudioSettings(codec=Codec("AAC"), channels=2, bitrate=120)
 
-    video_settings = VideoSettings(codec=Codec("HEVC"), quality=25, preset="slow", encoder="software")
+    video_settings = VideoSettings(
+        codec=Codec("HEVC"), quality=25, preset="slow", encoder="software"
+    )
 
     return FFmpegConverter(
         source_file_path="/asdf/foo/bar.mkv",
@@ -34,7 +36,9 @@ def target(mock_remove, mock_isdir, mock_access, mock_isfile, mock_exists):
 @patch.object(ffmpeg_converter, "ffmpy")
 def test_process(mock_ffmpy, mock_settings, target):
     target.process()
-    mock_ffmpy.FFmpeg.assert_called_with(inputs={"/asdf/foo/bar.mkv": "12345"}, outputs={"/asdf/temp/path.mkv": "12345"})
+    mock_ffmpy.FFmpeg.assert_called_with(
+        inputs={"/asdf/foo/bar.mkv": "12345"}, outputs={"/asdf/temp/path.mkv": "12345"}
+    )
     mock_ffmpy.FFmpeg().run.assert_called()
 
 
@@ -43,7 +47,9 @@ def test_process(mock_ffmpy, mock_settings, target):
 def test_process_dryrun(mock_ffmpy, mock_settings, target):
     target.dry_run = True
     target.process()
-    mock_ffmpy.FFmpeg.assert_called_with(inputs={"/asdf/foo/bar.mkv": "12345"}, outputs={"/asdf/temp/path.mkv": "12345"})
+    mock_ffmpy.FFmpeg.assert_called_with(
+        inputs={"/asdf/foo/bar.mkv": "12345"}, outputs={"/asdf/temp/path.mkv": "12345"}
+    )
     mock_ffmpy.FFmpeg().run.assert_not_called()
 
 
@@ -93,7 +99,9 @@ def test_extra_input_args(target):
 @patch("os.access", return_value=True)
 @patch("os.path.isdir")
 @patch("os.remove")
-def test_validate_destination_happy_path_exists(mock_remove, mock_isdir, mock_access, mock_isfile, mock_exists, target):
+def test_validate_destination_happy_path_exists(
+    mock_remove, mock_isdir, mock_access, mock_isfile, mock_exists, target
+):
     result = target._validate_destination()
     assert result is True
 
@@ -103,7 +111,9 @@ def test_validate_destination_happy_path_exists(mock_remove, mock_isdir, mock_ac
 @patch("os.access", return_value=False)
 @patch("os.path.isdir")
 @patch("os.remove")
-def test_validate_destination_unwritable(mock_remove, mock_isdir, mock_access, mock_isfile, mock_exists, target):
+def test_validate_destination_unwritable(
+    mock_remove, mock_isdir, mock_access, mock_isfile, mock_exists, target
+):
     with pytest.raises(IOError):
         target._validate_destination()
 
@@ -113,7 +123,9 @@ def test_validate_destination_unwritable(mock_remove, mock_isdir, mock_access, m
 @patch("os.access")
 @patch("os.path.isdir", return_falue=True)
 @patch("os.remove")
-def test_validate_destination_is_dir(mock_remove, mock_isdir, mock_access, mock_isfile, mock_exists, target):
+def test_validate_destination_is_dir(
+    mock_remove, mock_isdir, mock_access, mock_isfile, mock_exists, target
+):
     with pytest.raises(IOError):
         target._validate_destination()
 
@@ -123,7 +135,9 @@ def test_validate_destination_is_dir(mock_remove, mock_isdir, mock_access, mock_
 @patch("os.access")
 @patch("os.path.isdir")
 @patch("os.remove")
-def test_validate_destination_doesnt_exist(mock_remove, mock_isdir, mock_access, mock_isfile, mock_exists, target):
+def test_validate_destination_doesnt_exist(
+    mock_remove, mock_isdir, mock_access, mock_isfile, mock_exists, target
+):
     m = mock_open()
     with patch("builtins.open", m):
         result = target._validate_destination()
@@ -135,7 +149,9 @@ def test_validate_destination_doesnt_exist(mock_remove, mock_isdir, mock_access,
 @patch("os.access")
 @patch("os.path.isdir")
 @patch("os.remove")
-def test_validate_destination_invalid_path(mock_remove, mock_isdir, mock_access, mock_isfile, mock_exists, target):
+def test_validate_destination_invalid_path(
+    mock_remove, mock_isdir, mock_access, mock_isfile, mock_exists, target
+):
     m = mock_open()
     m.side_effect = FileNotFoundError
     with patch("builtins.open", m):

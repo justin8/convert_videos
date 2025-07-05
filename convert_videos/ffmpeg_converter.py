@@ -28,9 +28,14 @@ class FFmpegConverter:
         input_settings = self._generate_ffmpeg_settings("input")
         output_settings = self._generate_ffmpeg_settings("output")
 
-        ff = ffmpy.FFmpeg(inputs={self.source_file_path: input_settings}, outputs={self.destination_file_path: output_settings})
+        ff = ffmpy.FFmpeg(
+            inputs={self.source_file_path: input_settings},
+            outputs={self.destination_file_path: output_settings},
+        )
         if self.dry_run:
-            log.info(colour("blue", f"DRY-RUN: Would start conversion. Command: '{ff.cmd}'"))
+            log.info(
+                colour("blue", f"DRY-RUN: Would start conversion. Command: '{ff.cmd}'")
+            )
         else:
             log.info(colour("blue", f"Starting conversion. Command: '{ff.cmd}'"))
             ff.run()
@@ -45,7 +50,15 @@ class FFmpegConverter:
                 output = " -hwaccel qsv -hwaccel_output_format qsv"
             return output
 
-        output = "" + "-y" + " -threads 0" + str(self.video_settings) + str(self.audio_settings) + " " + self.extra_ffmpeg_output_args
+        output = (
+            ""
+            + "-y"
+            + " -threads 0"
+            + str(self.video_settings)
+            + str(self.audio_settings)
+            + " "
+            + self.extra_ffmpeg_output_args
+        )
         return output
 
     def _validate_destination(self):
@@ -53,9 +66,13 @@ class FFmpegConverter:
             if os.path.isfile(self.destination_file_path):
                 if os.access(self.destination_file_path, os.W_OK):
                     return True
-                raise IOError(f"Destination file {self.destination_file_path} exists but is not writable")
+                raise IOError(
+                    f"Destination file {self.destination_file_path} exists but is not writable"
+                )
             if os.path.isdir(self.destination_file_path):
-                raise IOError(f"Destination file {self.destination_file_path} is a directory, and not a file")
+                raise IOError(
+                    f"Destination file {self.destination_file_path} is a directory, and not a file"
+                )
         else:
             try:
                 with open(self.destination_file_path, "w") as f:

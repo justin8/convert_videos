@@ -1,17 +1,17 @@
-from dataclasses import dataclass
+import logging
 import os
 import shutil
 import tempfile
-import logging
 import traceback
+from dataclasses import dataclass
 from enum import Enum, auto
 
-from stringcase import titlecase, lowercase
+from stringcase import lowercase, titlecase
 from video_utils import Video
 
+from .colour import colour
 from .ffmpeg_converter import FFmpegConverter
 from .settings import AudioSettings, VideoSettings
-from .colour import colour
 
 log = logging.getLogger()
 
@@ -40,6 +40,8 @@ class Status(Enum):
 
     def colour(self):
         c = "green"
+        if self == Status.WOULD_CONVERT:
+            c = "blue"
         if self == Status.FAILED:
             c = "red"
         return colour(c, str(self))
@@ -57,7 +59,7 @@ class VideoProcessor:
     extra_ffmpeg_input_args: str = ""
     extra_ffmpeg_output_args: str = ""
     temp_directory: str = None  # type: ignore
-    minimum_size: int = 0  # Minimum file size in megabytes to process
+    minimum_size_b: int = 0  # Minimum file size in megabytes to process
 
     def _create_temp_file(self):
         return tempfile.mkstemp(dir=self.temp_directory, suffix=f".{self.container}")[1]
@@ -95,28 +97,36 @@ class VideoProcessor:
                 return Status.WOULD_CONVERT
             return Status.CONVERTED
         except Exception as e:
-            log.error(colour("red", f"Failed to convert {self.video.full_path}. Exception:"))
+            log.error(
+                colour("red", f"Failed to convert {self.video.full_path}. Exception:")
+            )
             log.error(e)
             traceback.print_exc()
             return Status.FAILED
 
     def _is_below_minimum_size(self):
-        if self.minimum_size > 0:
-            file_size_mb = os.path.getsize(self.video.full_path) / (1024 * 1024)
-            if file_size_mb < self.minimum_size:
+        if self.minimum_size_b > 0:
+            if self.video.size_b < self.minimum_size_b:
                 return True
         return False
 
     def already_processed(self):
         renamed_path = self.renamed_path()
         if os.path.exists(renamed_path):
-            log.debug(f"File '{self.video.name}' appears to have already been converted to {renamed_path} exists. Skipping")
+            log.debug(
+                f"File '{self.video.name}' appears to have already been converted to {renamed_path} exists. Skipping"
+            )
             return True
 
         split_filename = os.path.splitext(self.video.name)
-        codec_name = self.video_settings.codec.pretty_name or self.video_settings.get_ffmpeg_codec()
+        codec_name = (
+            self.video_settings.codec.pretty_name
+            or self.video_settings.get_ffmpeg_codec()
+        )
         if split_filename[0].endswith(codec_name):
-            log.debug(f"File '{self.video.name}' already matches the renaming format. Skipping")
+            log.debug(
+                f"File '{self.video.name}' already matches the renaming format. Skipping"
+            )
             return True
 
         return False
@@ -136,7 +146,12 @@ class VideoProcessor:
             shutil.move(self.temp_file, self.renamed_path())
         if self.in_place:
             if self.dry_run:
-                log.info(colour("blue", f"DRY-RUN: Would replace original file {self.video.full_path}"))
+                log.info(
+                    colour(
+                        "blue",
+                        f"DRY-RUN: Would replace original file {self.video.full_path}",
+                    )
+                )
                 return
             print(f"Replacing original file {self.video.full_path}")
             os.remove(self.video.full_path)

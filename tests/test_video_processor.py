@@ -10,7 +10,9 @@ from mock import patch
 def target():
     audio_settings = AudioSettings(codec=Codec("AAC"), channels=2, bitrate=120)
 
-    video_settings = VideoSettings(codec=Codec("HEVC"), quality=25, preset="slow", encoder="software")
+    video_settings = VideoSettings(
+        codec=Codec("HEVC"), quality=25, preset="slow", encoder="software"
+    )
 
     return VideoProcessor(
         video=Video("bar.mkv", "/asdf/foo"),
@@ -38,7 +40,9 @@ def test_create_temp_file_new_dir(mock_mkstemp, target):
 @patch.object(video_processor, "FFmpegConverter")
 @patch.object(VideoProcessor, "_move_output_video")
 @patch.object(VideoProcessor, "_create_temp_file", return_value="/foo")
-def test_process(mock_create_temp_file, mock_move_output_video, mock_ffmpeg_converter, target):
+def test_process(
+    mock_create_temp_file, mock_move_output_video, mock_ffmpeg_converter, target
+):
     target.process()
     mock_ffmpeg_converter.assert_called_with(
         audio_settings=target.audio_settings,
@@ -56,7 +60,9 @@ def test_process(mock_create_temp_file, mock_move_output_video, mock_ffmpeg_conv
 @patch.object(video_processor, "FFmpegConverter")
 @patch.object(VideoProcessor, "_move_output_video")
 @patch.object(VideoProcessor, "_create_temp_file", return_value="/foo")
-def test_process_dry_run(mock_create_temp_file, mock_move_output_video, mock_ffmpeg_converter, target):
+def test_process_dry_run(
+    mock_create_temp_file, mock_move_output_video, mock_ffmpeg_converter, target
+):
     target.dry_run = True
     target.process()
     mock_ffmpeg_converter.assert_called_with(
