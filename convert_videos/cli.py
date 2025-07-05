@@ -118,12 +118,7 @@ def configure_logger(verbose):
 @click.option(
     "--subtitle-language", help="Only include subtitle streams in this language"
 )
-@click.option(
-    "--minimum-size",
-    type=int,
-    default=0,
-    help="Skip processing videos if they are below the specified size",
-)
+
 @click.option(
     "--minimum-size-per-hour",
     type=int,
@@ -150,7 +145,6 @@ def main(
     encoder,
     audio_language,
     subtitle_language,
-    minimum_size,
     minimum_size_per_hour,
 ):
     configure_logger(verbose)
@@ -193,7 +187,7 @@ def main(
             temp_directory=temp_dir,
             container=container,
             dry_run=dry_run,
-            minimum_size_b=minimum_size * 1024 * 1024,
+
             minimum_size_per_hour_mb=minimum_size_per_hour,
         ).start()
 

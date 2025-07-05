@@ -199,27 +199,6 @@ def test_below_minimum_size(mock_is_below_minimum_size, target):
     assert response == Status.BELOW_MINIMUM_SIZE
 
 
-def test_is_below_minimum_size_true(target):
-    target.minimum_size_b = 200 * 1024 * 1024
-    target.video.size_b = 100 * 1024 * 1024
-    result = target._is_below_minimum_size()
-    assert result is True
-
-
-@patch("os.path.getsize", return_value=300 * 1024 * 1024)
-def test_is_below_minimum_size_false(mock_getsize, target):
-    target.minimum_size = 200
-    result = target._is_below_minimum_size()
-    assert result is False
-
-
-@patch("os.path.getsize", return_value=300 * 1024 * 1024)
-def test_is_below_minimum_size_zero(mock_getsize, target):
-    target.minimum_size = 0
-    result = target._is_below_minimum_size()
-    assert result is False
-
-
 def test_is_below_minimum_size_per_hour_true(target):
     target.minimum_size_per_hour_mb = 100  # 100 MB per hour
     target.video.duration = 2 * 60 * 60 * 1000  # 2 hours in ms

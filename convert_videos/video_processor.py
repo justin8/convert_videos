@@ -62,7 +62,7 @@ class VideoProcessor:
     extra_ffmpeg_input_args: str = ""
     extra_ffmpeg_output_args: str = ""
     temp_directory: str = None  # type: ignore
-    minimum_size_b: int = 0  # Minimum file size in megabytes to process
+
     minimum_size_per_hour_mb: int = 0  # Minimum file size per hour in MB
 
     def _create_temp_file(self):
@@ -116,10 +116,6 @@ class VideoProcessor:
                 return Status.FAILED
 
     def _is_below_minimum_size(self):
-        if self.minimum_size_b and self.video.size_b:
-            if self.video.size_b < self.minimum_size_b:
-                return True
-
         if self.minimum_size_per_hour_mb and self.video.duration and self.video.size_b:
             duration_hours = self.video.duration / (
                 1000 * 60 * 60

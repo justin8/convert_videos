@@ -50,7 +50,7 @@ Options:
   --audio-language TEXT           Only include audio streams in this language
   --subtitle-language TEXT        Only include subtitle streams in this
                                   language
-  --minimum-size INTEGER          Minimum file size in megabytes to process
+
   -h, --help                      Show this message and exit.
 ```
 

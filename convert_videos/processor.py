@@ -21,7 +21,7 @@ class Processor:
     extra_ffmpeg_output_args: str = ""
     temp_directory: str = None  # type: ignore
     container: str = "mkv"
-    minimum_size_b: int = 0  # Minimum file size in megabytes to process
+
     minimum_size_per_hour_mb: int = 0  # Minimum file size per hour in MB
 
     def start(self):
@@ -55,7 +55,7 @@ class Processor:
             status = item.process()
             if status == Status.BELOW_MINIMUM_SIZE:
                 log.debug(
-                    f"Video '{video.name}' is below the minimum size ({self.minimum_size_b // (1024 * 1024)} MB) and will not be processed."
+                    f"Video '{video.name}' is below the minimum size per hour and will not be processed."
                 )
             return_values.append({"video": video, "status": status})
         log.info(f"Finished processing files in directory {directory}")
@@ -73,6 +73,6 @@ class Processor:
             in_place=self.in_place,
             dry_run=self.dry_run,
             force=self.force,
-            minimum_size_b=self.minimum_size_b,
+
             minimum_size_per_hour_mb=self.minimum_size_per_hour_mb,
         )

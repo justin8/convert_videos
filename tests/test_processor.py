@@ -92,24 +92,6 @@ def test_convert_files_in_directory_status_passthrough(
     assert len(failures) == 6
 
 
-@patch.object(Processor, "_get_video_processor")
-def test_convert_files_in_directory_below_minimum_size(
-    mock_get_video_processor, target, file_map_fixture
-):
-    mock_get_video_processor().process.return_value = Status.BELOW_MINIMUM_SIZE
-    target.minimum_size = 100
-    target._file_map = file_map_fixture
-    response = target._convert_files_in_directory(
-        "/Users/jdray/git/home/convert_videos/tests/testData/foo"
-    )
-
-    below_minimum_size = [
-        x for x in response if x["status"] == Status.BELOW_MINIMUM_SIZE
-    ]
-
-    assert len(below_minimum_size) == 6
-
-
 @patch.object(processor, "VideoProcessor", autospec=True)
 def test_get_video_processor_with_minimum_size_per_hour(mock_video_processor, target):
     target.minimum_size_per_hour_mb = 100
@@ -127,7 +109,7 @@ def test_get_video_processor_with_minimum_size_per_hour(mock_video_processor, ta
         in_place=target.in_place,
         dry_run=target.dry_run,
         force=target.force,
-        minimum_size_b=target.minimum_size_b,
+
         minimum_size_per_hour_mb=100,
     )
     assert isinstance(result, NonCallableMagicMock)
