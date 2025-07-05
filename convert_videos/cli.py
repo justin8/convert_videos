@@ -114,7 +114,7 @@ def configure_logger(verbose):
     "--minimum-size",
     type=int,
     default=0,
-    help="Minimum file size in megabytes to process",
+    help="Skip processing videos if they are below the specified size",
 )
 def main(
     directories,

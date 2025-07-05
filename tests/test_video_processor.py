@@ -1,9 +1,10 @@
 import pytest
-from convert_videos import video_processor
-from convert_videos.video_processor import VideoProcessor, Status
-from convert_videos.settings import AudioSettings, VideoSettings
-from video_utils import Video, Codec
 from mock import patch
+from video_utils import Codec, Video
+
+from convert_videos import video_processor
+from convert_videos.settings import AudioSettings, VideoSettings
+from convert_videos.video_processor import Status, VideoProcessor
 
 
 @pytest.fixture
@@ -188,9 +189,9 @@ def test_below_minimum_size(mock_is_below_minimum_size, target):
     assert response == Status.BELOW_MINIMUM_SIZE
 
 
-@patch("os.path.getsize", return_value=100 * 1024 * 1024)
-def test_is_below_minimum_size_true(mock_getsize, target):
-    target.minimum_size = 200
+def test_is_below_minimum_size_true(target):
+    target.minimum_size_b = 200 * 1024 * 1024
+    target.video.size_b = 100 * 1024 * 1024
     result = target._is_below_minimum_size()
     assert result is True
 

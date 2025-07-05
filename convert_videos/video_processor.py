@@ -65,7 +65,10 @@ class VideoProcessor:
         return tempfile.mkstemp(dir=self.temp_directory, suffix=f".{self.container}")[1]
 
     def __str__(self):
-        return f"Video: {self.video.full_path}, format: {self.video.codec.pretty_name}, quality: {self.video.quality}"
+        codec_name = (
+            self.video.codec.pretty_name if self.video.codec is not None else "Unknown"
+        )
+        return f"Video: {self.video.full_path}, format: {codec_name}, quality: {self.video.quality}"
 
     def process(self):
         if self._is_below_minimum_size():
@@ -105,7 +108,7 @@ class VideoProcessor:
             return Status.FAILED
 
     def _is_below_minimum_size(self):
-        if self.minimum_size_b > 0:
+        if self.minimum_size_b and self.video.size_b:
             if self.video.size_b < self.minimum_size_b:
                 return True
         return False
