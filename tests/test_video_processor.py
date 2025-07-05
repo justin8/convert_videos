@@ -1,10 +1,18 @@
 import pytest
-from mock import patch
+from mock import Mock, patch
 from video_utils import Codec, Video
 
 from convert_videos import video_processor
 from convert_videos.settings import AudioSettings, VideoSettings
 from convert_videos.video_processor import Status, VideoProcessor
+
+
+def mock_temp_file(name):
+    mock_file = Mock()
+    mock_file.name = name
+    mock_file.__enter__ = Mock(return_value=mock_file)
+    mock_file.__exit__ = Mock(return_value=None)
+    return mock_file
 
 
 @pytest.fixture
@@ -25,25 +33,26 @@ def target():
     )
 
 
-@patch("tempfile.mkstemp", autospec=True)
-def test_create_temp_file_default(mock_mkstemp, target):
+@patch("tempfile.NamedTemporaryFile", autospec=True)
+def test_create_temp_file_default(mock_NamedTemporaryFile, target):
     target._create_temp_file()
-    mock_mkstemp.assert_called_with(dir=None, suffix=".asdf")
+    mock_NamedTemporaryFile.assert_called_with(dir=None, suffix=".asdf")
 
 
-@patch("tempfile.mkstemp", autospec=True)
-def test_create_temp_file_new_dir(mock_mkstemp, target):
+@patch("tempfile.NamedTemporaryFile", autospec=True)
+def test_create_temp_file_new_dir(mock_NamedTemporaryFile, target):
     target.temp_directory = "/foo/bar"
     target._create_temp_file()
-    mock_mkstemp.assert_called_with(dir="/foo/bar", suffix=".asdf")
+    mock_NamedTemporaryFile.assert_called_with(dir="/foo/bar", suffix=".asdf")
 
 
 @patch.object(video_processor, "FFmpegConverter")
 @patch.object(VideoProcessor, "_move_output_video")
-@patch.object(VideoProcessor, "_create_temp_file", return_value="/foo")
+@patch.object(VideoProcessor, "_create_temp_file")
 def test_process(
     mock_create_temp_file, mock_move_output_video, mock_ffmpeg_converter, target
 ):
+    mock_create_temp_file.return_value = mock_temp_file("/foo")
     target.process()
     mock_ffmpeg_converter.assert_called_with(
         audio_settings=target.audio_settings,
@@ -60,10 +69,11 @@ def test_process(
 
 @patch.object(video_processor, "FFmpegConverter")
 @patch.object(VideoProcessor, "_move_output_video")
-@patch.object(VideoProcessor, "_create_temp_file", return_value="/foo")
+@patch.object(VideoProcessor, "_create_temp_file")
 def test_process_dry_run(
     mock_create_temp_file, mock_move_output_video, mock_ffmpeg_converter, target
 ):
+    mock_create_temp_file.return_value = mock_temp_file("/foo")
     target.dry_run = True
     target.process()
     mock_ffmpeg_converter.assert_called_with(
@@ -114,7 +124,7 @@ def test_in_place_file_path(target):
 @patch("shutil.move")
 @patch("os.remove")
 def test_move_output_video(mock_remove, mock_move, target):
-    target.temp_file = "/foo/bar/baz"
+    target.temp_file = mock_temp_file("/foo/bar/baz")
     target._move_output_video()
     mock_move.assert_called_with("/foo/bar/baz", "/asdf/foo/bar - HEVC.asdf")
     mock_remove.assert_not_called()
@@ -124,7 +134,7 @@ def test_move_output_video(mock_remove, mock_move, target):
 @patch("os.remove")
 def test_move_output_video_dry_run(mock_remove, mock_move, target):
     target.dry_run = True
-    target.temp_file = "/foo/bar/baz"
+    target.temp_file = mock_temp_file("/foo/bar/baz")
     target._move_output_video()
     mock_move.assert_not_called()
     mock_remove.assert_not_called()
@@ -133,7 +143,7 @@ def test_move_output_video_dry_run(mock_remove, mock_move, target):
 @patch("shutil.move")
 @patch("os.remove")
 def test_move_output_video_in_place(mock_remove, mock_move, target):
-    target.temp_file = "/foo/bar/baz"
+    target.temp_file = mock_temp_file("/foo/bar/baz")
     target.in_place = True
     target._move_output_video()
     mock_move.assert_any_call("/foo/bar/baz", "/asdf/foo/bar - HEVC.asdf")
@@ -145,11 +155,11 @@ def test_move_output_video_in_place(mock_remove, mock_move, target):
 @patch("os.remove")
 def test_move_output_video_in_place_dry_run(mock_remove, mock_move, target):
     target.dry_run = True
-    target.temp_file = "/foo/bar/baz"
+    target.temp_file = mock_temp_file("/foo/bar/baz")
     target.in_place = True
     target._move_output_video()
     mock_move.assert_not_called()
-    mock_remove.assert_not_called
+    mock_remove.assert_not_called()
 
 
 def test_in_desired_format(target):

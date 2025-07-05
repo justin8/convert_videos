@@ -65,7 +65,9 @@ class VideoProcessor:
     minimum_size_b: int = 0  # Minimum file size in megabytes to process
 
     def _create_temp_file(self):
-        return tempfile.mkstemp(dir=self.temp_directory, suffix=f".{self.container}")[1]
+        return tempfile.NamedTemporaryFile(
+            dir=self.temp_directory, suffix=f".{self.container}"
+        )
 
     def __str__(self):
         codec_name = (
@@ -86,29 +88,31 @@ class VideoProcessor:
         if self.already_processed():
             return Status.ALREADY_PROCESSED
 
-        try:
-            self.temp_file = self._create_temp_file()
-            converter = FFmpegConverter(
-                source_file_path=self.video.full_path,
-                destination_file_path=self.temp_file,
-                extra_ffmpeg_input_args=self.extra_ffmpeg_input_args,
-                extra_ffmpeg_output_args=self.extra_ffmpeg_output_args,
-                video_settings=self.video_settings,
-                audio_settings=self.audio_settings,
-                dry_run=self.dry_run,
-            )
-            converter.process()
-            self._move_output_video()
-            if self.dry_run:
-                return Status.WOULD_CONVERT
-            return Status.CONVERTED
-        except Exception as e:
-            log.error(
-                colour("red", f"Failed to convert {self.video.full_path}. Exception:")
-            )
-            log.error(e)
-            traceback.print_exc()
-            return Status.FAILED
+        with self._create_temp_file() as self.temp_file:
+            try:
+                converter = FFmpegConverter(
+                    source_file_path=self.video.full_path,
+                    destination_file_path=self.temp_file.name,
+                    extra_ffmpeg_input_args=self.extra_ffmpeg_input_args,
+                    extra_ffmpeg_output_args=self.extra_ffmpeg_output_args,
+                    video_settings=self.video_settings,
+                    audio_settings=self.audio_settings,
+                    dry_run=self.dry_run,
+                )
+                converter.process()
+                self._move_output_video()
+                if self.dry_run:
+                    return Status.WOULD_CONVERT
+                return Status.CONVERTED
+            except Exception as e:
+                log.error(
+                    colour(
+                        "red", f"Failed to convert {self.video.full_path}. Exception:"
+                    )
+                )
+                log.error(e)
+                traceback.print_exc()
+                return Status.FAILED
 
     def _is_below_minimum_size(self):
         if self.minimum_size_b and self.video.size_b:
@@ -149,7 +153,7 @@ class VideoProcessor:
     def _move_output_video(self):
         log.debug("Moving file from temporary storage back to original folder")
         if not self.dry_run:
-            shutil.move(self.temp_file, self.renamed_path())
+            shutil.move(self.temp_file.name, self.renamed_path())
         if self.in_place:
             if self.dry_run:
                 log.info(
