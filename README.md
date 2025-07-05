@@ -6,7 +6,7 @@
 [![Build status](https://github.com/justin8/convert_videos/actions/workflows/build-test.yml/badge.svg)](https://github.com/justin8/convert_videos/actions/workflows/build-test.yml)
 [![codecov](https://codecov.io/gh/justin8/convert_videos/branch/master/graph/badge.svg)](https://codecov.io/gh/justin8/convert_videos)
 
-This tool allows bulk conversion of videos using ffmpeg.
+This tool allows bulk conversion of videos using ffmpeg, including with hardware acceleration.
 
 By default it will append the codec name to the file, e.g. `Best Movie Ever.avi` -> `Best Movie Ever - x265.mkv`. This can be optionally overridden using the `--in-place` flag.
 

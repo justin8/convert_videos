@@ -25,7 +25,7 @@ wheels = [
 
 [[package]]
 name = "convert-videos"
-version = "2.9.1"
+version = "2.9.2"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
@@ -54,7 +54,7 @@ requires-dist = [
     { name = "iso639", specifier = ">=0.1.4,<0.2" },
     { name = "prettytable", specifier = ">=3.7.0,<4" },
     { name = "stringcase", specifier = ">=1.2.0,<2" },
-    { name = "video-utils", specifier = ">=2.4.2,<3" },
+    { name = "video-utils", specifier = ">=2.4.3,<3" },
 ]
 
 [package.metadata.requires-dev]
@@ -290,7 +290,7 @@ sdist = { url = "https://files.pythonhosted.org/packages/f3/1f/1241aa3d66e8dc161
 
 [[package]]
 name = "video-utils"
-version = "2.4.2"
+version = "2.4.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama" },
@@ -299,9 +299,9 @@ dependencies = [
     { name = "pymediainfo" },
     { name = "rich" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/69/9f/97afe1bf13db3767431f0855bad334821fc11e7aca40716e4589c99dafea/video_utils-2.4.2.tar.gz", hash = "sha256:74d3bf76d5a0e33de21597654266964c30a1e72834ca3a90d8b39eb81abdee6c", size = 31911, upload-time = "2025-07-04T13:40:26.188Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f3/20/608189a184aa98235526a851f959b32f49184849ee8d2ef9bf3e3e42e4d8/video_utils-2.4.3.tar.gz", hash = "sha256:268ac6e4806a23ea5075a2bac0c5be22eafa8cb1ff9e7d478beeddfd9bac7593", size = 35605, upload-time = "2025-07-05T01:28:13.454Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/90/eb/eff25f914939ec52da120e87c86e9f3ee78666060a9b3f8f1c628bd2adf6/video_utils-2.4.2-py3-none-any.whl", hash = "sha256:e2be923b5123d6f108269362bae0ea3357385376e7737edb151b101755a60b08", size = 8489, upload-time = "2025-07-04T13:40:25.473Z" },
+    { url = "https://files.pythonhosted.org/packages/60/63/f405cb758b305e5d3d9d3e127fb740e8bd1265f8afc781015c87d9505b9c/video_utils-2.4.3-py3-none-any.whl", hash = "sha256:9a1765a242104222031652424fa87c5b98a104a288000e4598655a8a98fcf472", size = 8440, upload-time = "2025-07-05T01:28:12.454Z" },
 ]
 
 [[package]]
