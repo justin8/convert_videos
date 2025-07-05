@@ -1,12 +1,11 @@
-from dataclasses import dataclass
 import logging
 import os
+from dataclasses import dataclass
 
 import ffmpy
 
 from .colour import colour
 from .settings import AudioSettings, VideoSettings
-
 
 log = logging.getLogger(__name__)
 
@@ -45,7 +44,7 @@ class FFmpegConverter:
         if mode == "input":
             output = " " + self.extra_ffmpeg_input_args
             if self.video_settings.encoder == "nvidia":
-                output = " -hwaccel cuvid"
+                output = " -hwaccel cuda"
             if self.video_settings.encoder == "intel":
                 output = " -hwaccel qsv -hwaccel_output_format qsv"
             return output

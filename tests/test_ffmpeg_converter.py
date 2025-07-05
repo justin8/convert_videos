@@ -1,11 +1,10 @@
-from mock import patch, mock_open
 import pytest
-
+from mock import mock_open, patch
 from video_utils import Codec
-from convert_videos.settings import AudioSettings, VideoSettings
 
-from convert_videos.ffmpeg_converter import FFmpegConverter
 from convert_videos import ffmpeg_converter
+from convert_videos.ffmpeg_converter import FFmpegConverter
+from convert_videos.settings import AudioSettings, VideoSettings
 
 
 @pytest.fixture
@@ -79,7 +78,7 @@ def test_generate_ffmpeg_input_settings(target):
 def test_generate_ffmpeg_input_settings_nvidia_hw(target):
     target.video_settings.encoder = "nvidia"
     result = target._generate_ffmpeg_settings("input")
-    assert result == " -hwaccel cuvid"
+    assert result == " -hwaccel cuda"
 
 
 def test_generate_ffmpeg_input_settings_intel_hw(target):
