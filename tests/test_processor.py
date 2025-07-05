@@ -108,3 +108,26 @@ def test_convert_files_in_directory_below_minimum_size(
     ]
 
     assert len(below_minimum_size) == 6
+
+
+@patch.object(processor, "VideoProcessor", autospec=True)
+def test_get_video_processor_with_minimum_size_per_hour(mock_video_processor, target):
+    target.minimum_size_per_hour_mb = 100
+    video = Video("test.mkv", "/tmp")
+    result = target._get_video_processor(video)
+
+    mock_video_processor.assert_called_with(
+        video=video,
+        video_settings=target.video_settings,
+        audio_settings=target.audio_settings,
+        container=target.container,
+        extra_ffmpeg_input_args=target.extra_ffmpeg_input_args,
+        extra_ffmpeg_output_args=target.extra_ffmpeg_output_args,
+        temp_directory=target.temp_directory,
+        in_place=target.in_place,
+        dry_run=target.dry_run,
+        force=target.force,
+        minimum_size_b=target.minimum_size_b,
+        minimum_size_per_hour_mb=100,
+    )
+    assert isinstance(result, NonCallableMagicMock)

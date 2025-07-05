@@ -218,3 +218,35 @@ def test_is_below_minimum_size_zero(mock_getsize, target):
     target.minimum_size = 0
     result = target._is_below_minimum_size()
     assert result is False
+
+
+def test_is_below_minimum_size_per_hour_true(target):
+    target.minimum_size_per_hour_mb = 100  # 100 MB per hour
+    target.video.duration = 2 * 60 * 60 * 1000  # 2 hours in ms
+    target.video.size_b = 150 * 1024 * 1024  # 150 MB (below 200 MB required)
+    result = target._is_below_minimum_size()
+    assert result is True
+
+
+def test_is_below_minimum_size_per_hour_false(target):
+    target.minimum_size_per_hour_mb = 100  # 100 MB per hour
+    target.video.duration = 2 * 60 * 60 * 1000  # 2 hours in ms
+    target.video.size_b = 250 * 1024 * 1024  # 250 MB (above 200 MB required)
+    result = target._is_below_minimum_size()
+    assert result is False
+
+
+def test_is_below_minimum_size_per_hour_no_duration(target):
+    target.minimum_size_per_hour_mb = 100
+    target.video.duration = None
+    target.video.size_b = 50 * 1024 * 1024
+    result = target._is_below_minimum_size()
+    assert result is False
+
+
+def test_is_below_minimum_size_per_hour_zero(target):
+    target.minimum_size_per_hour_mb = 0
+    target.video.duration = 2 * 60 * 60 * 1000
+    target.video.size_b = 50 * 1024 * 1024
+    result = target._is_below_minimum_size()
+    assert result is False

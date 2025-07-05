@@ -25,7 +25,7 @@ wheels = [
 
 [[package]]
 name = "convert-videos"
-version = "2.9.6"
+version = "2.9.7"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
@@ -54,7 +54,7 @@ requires-dist = [
     { name = "iso639", specifier = ">=0.1.4,<0.2" },
     { name = "prettytable", specifier = ">=3.7.0,<4" },
     { name = "stringcase", specifier = ">=1.2.0,<2" },
-    { name = "video-utils", specifier = ">=2.4.3,<3" },
+    { name = "video-utils", specifier = ">=2.4.6,<3" },
 ]
 
 [package.metadata.requires-dev]
@@ -290,18 +290,17 @@ sdist = { url = "https://files.pythonhosted.org/packages/f3/1f/1241aa3d66e8dc161
 
 [[package]]
 name = "video-utils"
-version = "2.4.5"
+version = "2.4.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama" },
-    { name = "ffmpy" },
     { name = "iso639" },
     { name = "pymediainfo" },
     { name = "rich" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/aa/f5/fc17dcde95c6b73d5a3fde909fecb38b61c9097d0b09e1127fb65cdf38a1/video_utils-2.4.5.tar.gz", hash = "sha256:a1def55e8e77cf1317f29174e9da62b35b83fd2d4569e4dc16b492d12b7c0534", size = 35600, upload-time = "2025-07-05T02:42:31.086Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/72/92/7d16fa40379a98d9c8c26a52360966c8ec2ceda20b1ddc030db6870d74f7/video_utils-2.4.6.tar.gz", hash = "sha256:c15e9fae180b7f9865efcf5dca70bc44e2939acaf4a769ce7f258d785310b0c6", size = 35433, upload-time = "2025-07-05T05:16:32.233Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/85/13/e01643fa048025aacc213d144b7b5b41ae0d5a93f2bcecb527c4eb98cd21/video_utils-2.4.5-py3-none-any.whl", hash = "sha256:06d1e774e227edd2d7924962355663cea8d45435de1de20a8eba86a8885ec681", size = 8415, upload-time = "2025-07-05T02:42:30.347Z" },
+    { url = "https://files.pythonhosted.org/packages/6c/38/56d0cac34235e162f463b19850d50ec9d86203a2a0437a4e4550cfb66789/video_utils-2.4.6-py3-none-any.whl", hash = "sha256:f0067f7287d2510fa2959869c3880ebcc1924dcfee6ad0b580298fd52bff7b44", size = 8452, upload-time = "2025-07-05T05:16:31.192Z" },
 ]
 
 [[package]]

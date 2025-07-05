@@ -124,6 +124,12 @@ def configure_logger(verbose):
     default=0,
     help="Skip processing videos if they are below the specified size",
 )
+@click.option(
+    "--minimum-size-per-hour",
+    type=int,
+    default=0,
+    help="Minimum file size in megabytes per hour of video duration to process",
+)
 def main(
     directories,
     force,
@@ -145,6 +151,7 @@ def main(
     audio_language,
     subtitle_language,
     minimum_size,
+    minimum_size_per_hour,
 ):
     configure_logger(verbose)
 
@@ -187,6 +194,7 @@ def main(
             container=container,
             dry_run=dry_run,
             minimum_size_b=minimum_size * 1024 * 1024,
+            minimum_size_per_hour_mb=minimum_size_per_hour,
         ).start()
 
     _print_conversion_results(results)

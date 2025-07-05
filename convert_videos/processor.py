@@ -22,6 +22,7 @@ class Processor:
     temp_directory: str = None  # type: ignore
     container: str = "mkv"
     minimum_size_b: int = 0  # Minimum file size in megabytes to process
+    minimum_size_per_hour_mb: int = 0  # Minimum file size per hour in MB
 
     def start(self):
         self._load_file_map()
@@ -73,4 +74,5 @@ class Processor:
             dry_run=self.dry_run,
             force=self.force,
             minimum_size_b=self.minimum_size_b,
+            minimum_size_per_hour_mb=self.minimum_size_per_hour_mb,
         )
