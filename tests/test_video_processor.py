@@ -89,7 +89,7 @@ def test_already_processed_renamed_file_exists(mock_exists, mock_renamed_path, t
 @patch.object(VideoProcessor, "renamed_path")
 @patch("os.path.exists", return_value=False)
 def test_already_processed_container_matches(mock_exists, mock_renamed_path, target):
-    target.video.name = "bar - x265.mkv"
+    target.video.name = "bar - HEVC.mkv"
     result = target.already_processed()
     assert result is True
 
@@ -103,7 +103,7 @@ def test_already_processed_false(mock_exists, mock_renamed_path, target):
 
 def test_renamed_path(target):
     result = target.renamed_path()
-    assert result == "/asdf/foo/bar - x265.asdf"
+    assert result == "/asdf/foo/bar - HEVC.asdf"
 
 
 def test_in_place_file_path(target):
@@ -116,7 +116,7 @@ def test_in_place_file_path(target):
 def test_move_output_video(mock_remove, mock_move, target):
     target.temp_file = "/foo/bar/baz"
     target._move_output_video()
-    mock_move.assert_called_with("/foo/bar/baz", "/asdf/foo/bar - x265.asdf")
+    mock_move.assert_called_with("/foo/bar/baz", "/asdf/foo/bar - HEVC.asdf")
     mock_remove.assert_not_called()
 
 
@@ -136,9 +136,9 @@ def test_move_output_video_in_place(mock_remove, mock_move, target):
     target.temp_file = "/foo/bar/baz"
     target.in_place = True
     target._move_output_video()
-    mock_move.assert_any_call("/foo/bar/baz", "/asdf/foo/bar - x265.asdf")
+    mock_move.assert_any_call("/foo/bar/baz", "/asdf/foo/bar - HEVC.asdf")
     mock_remove.assert_called_with("/asdf/foo/bar.mkv")
-    mock_move.assert_any_call("/asdf/foo/bar - x265.asdf", "/asdf/foo/bar.asdf")
+    mock_move.assert_any_call("/asdf/foo/bar - HEVC.asdf", "/asdf/foo/bar.asdf")
 
 
 @patch("shutil.move")

@@ -36,11 +36,14 @@ class Status(Enum):
     FAILED = auto()
 
     def __str__(self):
-        return titlecase(lowercase(self.name))
+        status_text = titlecase(lowercase(self.name))
+        if self not in (Status.FAILED, Status.WOULD_CONVERT, Status.CONVERTED):
+            return f"SKIPPING: {status_text}"
+        return status_text
 
     def colour(self):
         c = "green"
-        if self == Status.WOULD_CONVERT:
+        if self not in (Status.WOULD_CONVERT, Status.CONVERTED):
             c = "blue"
         if self == Status.FAILED:
             c = "red"

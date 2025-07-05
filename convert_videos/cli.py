@@ -141,14 +141,14 @@ def main(
     configure_logger(verbose)
 
     if encoder == "auto-detect":
-        log.debug("Auto detecting hardware acceleration support")
+        log.info("Auto detecting hardware acceleration support")
         hardware_support = check_hardware_acceleration_support()
         encoder = "software"
         if hardware_support["intel_quicksync"]:
             encoder = "intel"
         if hardware_support["nvidia_nvenc"]:
             encoder = "nvidia"
-        log.debug(f"Using encoder: {encoder}")
+        log.info(f"Using encoder: {encoder}")
 
     video_settings = VideoSettings(
         codec=Codec(video_codec),
@@ -193,7 +193,7 @@ def _print_conversion_results(results):
             codec = "Unknown"
         table.add_row(
             [
-                result["video"].full_path,
+                result["video"].name,
                 codec,
                 str(result["video"].size_b // (1024 * 1024)) + " MB",
                 result["status"].colour(),
