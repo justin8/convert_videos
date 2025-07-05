@@ -8,6 +8,13 @@ from convert_videos.util import check_hardware_acceleration_support
 
 from .processor import AudioSettings, Processor, VideoSettings
 
+try:
+    from importlib.metadata import version
+except ImportError:
+    from importlib_metadata import version
+
+__version__ = version("convert_videos")
+
 CONTEXT_SETTINGS = dict(help_option_names=["--help", "-h"])
 LOG_FORMATTER = logging.Formatter("%(asctime)s - %(message)s", "%Y-%m-%d %H:%M:%S")
 
@@ -24,6 +31,7 @@ def configure_logger(verbose):
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)
+@click.version_option(version=__version__)
 @click.argument("directories", nargs=-1, type=click.Path(exists=True), required=True)
 @click.option(
     "--in-place",
