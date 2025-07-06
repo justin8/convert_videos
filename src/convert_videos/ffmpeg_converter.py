@@ -19,6 +19,7 @@ class FFmpegConverter:
     dry_run: bool
     video_settings: VideoSettings
     audio_settings: AudioSettings
+    verbose: bool = False
 
     def __post_init__(self):
         self._validate_destination()
@@ -26,8 +27,13 @@ class FFmpegConverter:
     def process(self):
         input_settings = self._generate_ffmpeg_settings("input")
         output_settings = self._generate_ffmpeg_settings("output")
+        default_global_options = ["-loglevel", "fatal", "-stats"]
+        verbose_global_options = ["-loglevel", "info", "-hide_banner", "-stats"]
 
         ff = ffmpy.FFmpeg(
+            global_options=verbose_global_options
+            if self.verbose
+            else default_global_options,
             inputs={self.source_file_path: input_settings},
             outputs={self.destination_file_path: output_settings},
         )

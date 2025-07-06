@@ -23,6 +23,7 @@ class Processor:
     container: str = "mkv"
 
     minimum_size_per_hour_mb: int = 0  # Minimum file size per hour in MB
+    verbose: bool = False
 
     def start(self):
         self._load_file_map()
@@ -81,4 +82,5 @@ class Processor:
             dry_run=self.dry_run,
             force=self.force,
             minimum_size_per_hour_mb=self.minimum_size_per_hour_mb,
+            verbose=self.verbose,
         )

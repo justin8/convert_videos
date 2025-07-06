@@ -6,6 +6,6 @@ When running commands like grep, remove unneeded results with `--exclude-dir .ve
 
 Source code belongs in ./convert_videos/ and tests in ./tests each source code file should have it's own test file using the same name and prefixed with `test_`
 
-After all changes are completed and working, use `uv run ruff format; uv run ruff check` to format all files correctly and check for issues.
+After all changes are completed and working, use `uv run ruff format; uv run ruff check` to format all files correctly and check for issues. Run them as one command.
 
 Then bump the minor version in `pyproject.toml` and run `uv sync`

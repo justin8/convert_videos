@@ -189,6 +189,7 @@ def main(
             container=container,
             dry_run=dry_run,
             minimum_size_per_hour_mb=minimum_size_per_hour,
+            verbose=verbose,
         ).start()
 
     print_conversion_results(results)

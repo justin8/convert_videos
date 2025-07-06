@@ -36,7 +36,9 @@ def target(mock_remove, mock_isdir, mock_access, mock_isfile, mock_exists):
 def test_process(mock_ffmpy, mock_settings, target):
     target.process()
     mock_ffmpy.FFmpeg.assert_called_with(
-        inputs={"/asdf/foo/bar.mkv": "12345"}, outputs={"/asdf/temp/path.mkv": "12345"}
+        global_options=["-loglevel", "fatal", "-stats"],
+        inputs={"/asdf/foo/bar.mkv": "12345"},
+        outputs={"/asdf/temp/path.mkv": "12345"},
     )
     mock_ffmpy.FFmpeg().run.assert_called()
 
@@ -47,7 +49,9 @@ def test_process_dryrun(mock_ffmpy, mock_settings, target):
     target.dry_run = True
     target.process()
     mock_ffmpy.FFmpeg.assert_called_with(
-        inputs={"/asdf/foo/bar.mkv": "12345"}, outputs={"/asdf/temp/path.mkv": "12345"}
+        global_options=["-loglevel", "fatal", "-stats"],
+        inputs={"/asdf/foo/bar.mkv": "12345"},
+        outputs={"/asdf/temp/path.mkv": "12345"},
     )
     mock_ffmpy.FFmpeg().run.assert_not_called()
 

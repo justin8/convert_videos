@@ -65,6 +65,7 @@ class VideoProcessor:
     temp_directory: str = None  # type: ignore
 
     minimum_size_per_hour_mb: int = 0  # Minimum file size per hour in MB
+    verbose: bool = False
 
     def _create_temp_file(self):
         return tempfile.NamedTemporaryFile(
@@ -100,6 +101,7 @@ class VideoProcessor:
                     video_settings=self.video_settings,
                     audio_settings=self.audio_settings,
                     dry_run=self.dry_run,
+                    verbose=self.verbose,
                 )
                 converter.process()
                 self._move_output_video()
