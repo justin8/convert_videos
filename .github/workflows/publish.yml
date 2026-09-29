@@ -5,11 +5,20 @@ on:
     branches:
       - main
 
+# Using shared composite action because PyPI Trusted Publishing requires OIDC claims to match this repository (warehouse#11096)
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   build-and-test:
     uses: justin8/workflows/.github/workflows/python-build-test.yml@main
 
-  tag-and-publish:
-    uses: justin8/workflows/.github/workflows/python-tag-and-publish.yml@main
-    needs: build-and-test
-    secrets: inherit
+  publish:
+    needs: [build-and-test]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: justin8/workflows/python-tag-and-publish@main
