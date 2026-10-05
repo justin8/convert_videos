@@ -124,7 +124,7 @@ def configure_logger(verbose):
     "--minimum-size-per-hour",
     type=int,
     default=0,
-    help="Minimum file size in megabytes per hour of video duration to process",
+    help="Skip videos smaller than this threshold (in MB per hour of duration).",
 )
 def main(
     directories,

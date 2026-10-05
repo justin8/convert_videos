@@ -43,6 +43,7 @@ class TestCLI:
         result = runner.invoke(main, ["--help"])
         assert result.exit_code == 0
         assert "amd" in result.output
+        assert "Skip videos smaller than this threshold" in result.output
 
     @patch("convert_videos.cli.Processor")
     @patch("convert_videos.cli.print_conversion_results")

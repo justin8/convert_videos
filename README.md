@@ -14,10 +14,37 @@ Videos are only converted if they do not already match the desired codec, allowi
 
 ## Usage
 
+Run directly without installing using [`uvx`](https://docs.astral.sh/uv/guides/tools/):
+
+```bash
+# Convert all videos in a directory to HEVC (x265)
+uvx convert-videos /path/to/videos
+
+# Run in-place with hardware acceleration (e.g. AMD, Nvidia, Intel, or auto-detect)
+uvx convert-videos --in-place --encoder auto-detect -q 22 /path/to/videos
+
+# Keep only English audio and subtitles
+uvx convert-videos --audio-language eng --subtitle-language eng /path/to/videos
+
+# Perform a dry-run with verbose output
+uvx convert-videos --dry-run -v /path/to/videos
+```
+
+You can also install it as a persistent tool:
+
+```bash
+uv tool install convert-videos
+# or
+pip install convert-videos
+```
+
+### Options
+
 ```
 Usage: convert-videos [OPTIONS] DIRECTORIES...
 
 Options:
+  --version                       Show the version and exit.
   -i, --in-place                  Replace the original files instead of
                                   appending the new codec name
   -f, --force                     Force conversion even if the format of the
@@ -50,7 +77,9 @@ Options:
   --audio-language TEXT           Only include audio streams in this language
   --subtitle-language TEXT        Only include subtitle streams in this
                                   language
-
+  --minimum-size-per-hour INTEGER
+                                  Skip videos smaller than this threshold (in
+                                  MB per hour of duration).
   -h, --help                      Show this message and exit.
 ```
 
@@ -117,3 +146,12 @@ All audio streams will be included by default unless a language filter is specif
 ## Subtitles
 
 All subtitles will be copied from the source if they exist unless a language filter is specified with `--subtitle-language`.
+
+## Skipping Already-Compressed Videos
+
+Use `--minimum-size-per-hour <MB>` to skip files that are already small enough to not warrant re-encoding:
+
+```bash
+# Skip any video smaller than 500 MB per hour of playtime (e.g. a 2-hour movie under 1 GB is skipped)
+uvx convert-videos --minimum-size-per-hour 500 /path/to/videos
+```
