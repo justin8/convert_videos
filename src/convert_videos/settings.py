@@ -68,7 +68,10 @@ class VideoSettings:
     def _get_scaling_settings(self):
         output = ""
         if self.width:
-            output += f" -vf scale={self.width}:-2"
+            if self.encoder == "amd":
+                output += f" -vf scale_vaapi={self.width}:-2"
+            else:
+                output += f" -vf scale={self.width}:-2"
         return output
 
     def _get_quality_settings(self):
@@ -93,6 +96,8 @@ class VideoSettings:
             # video. Forcing i-frame generation every 120 frames to counter this
             # Source: https://github.com/intel/media-driver/issues/1576#issuecomment-1609128922
             output += " -g:v 120"
+        elif self.encoder == "amd":
+            output = f" -rc_mode CQP -qp {self.quality}"
         else:
             output = f" -crf {self.quality}"
         return output

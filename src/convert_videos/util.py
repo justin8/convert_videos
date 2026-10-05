@@ -6,7 +6,7 @@ from convert_videos.video_processor import Status
 
 
 def check_hardware_acceleration_support():
-    support = {"intel_quicksync": False, "nvidia_nvenc": False}
+    support = {"intel_quicksync": False, "nvidia_nvenc": False, "amd_vaapi": False}
 
     lsmod_output = subprocess.run(["lsmod"], capture_output=True, text=True)
 
@@ -14,6 +14,8 @@ def check_hardware_acceleration_support():
         support["intel_quicksync"] = True
     if "nvidia" in lsmod_output.stdout:
         support["nvidia_nvenc"] = True
+    if "amdgpu" in lsmod_output.stdout or "radeon" in lsmod_output.stdout:
+        support["amd_vaapi"] = True
 
     return support
 

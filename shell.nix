@@ -9,7 +9,6 @@ pkgs.mkShell {
     poetry
     git
     libmediainfo
-    ffmpeg
   ];
 
   shellHook = ''

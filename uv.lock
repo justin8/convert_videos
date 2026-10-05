@@ -54,7 +54,7 @@ requires-dist = [
     { name = "iso639", specifier = ">=0.1.4,<0.2" },
     { name = "prettytable", specifier = ">=3.7.0,<4" },
     { name = "stringcase", specifier = ">=1.2.0,<2" },
-    { name = "video-utils", specifier = ">=2.4.7,<3" },
+    { name = "video-utils", specifier = ">=2.5.3,<3" },
 ]
 
 [package.metadata.requires-dev]
@@ -290,7 +290,7 @@ sdist = { url = "https://files.pythonhosted.org/packages/f3/1f/1241aa3d66e8dc161
 
 [[package]]
 name = "video-utils"
-version = "2.4.7"
+version = "2.5.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama" },
@@ -298,9 +298,9 @@ dependencies = [
     { name = "pymediainfo" },
     { name = "rich" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/99/20/f88015383de9b5e71b615c2a12780936f103f7fa92f518687c0a098f31ff/video_utils-2.4.7.tar.gz", hash = "sha256:251bb48c59fa3d3aadc278165d504e5885be1726badd2244b7b8b8b22bc1b219", size = 35689, upload-time = "2025-07-05T10:55:35.523Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e3/d0/f31b684dd675dd0c0253850c161608d4cfdadad27e090a1816d89feb29ce/video_utils-2.5.3.tar.gz", hash = "sha256:42b2832c8affacd1cc8a5773f2bd8cad926269fb73428484cb6992b8fd9f908e", size = 37054, upload-time = "2026-10-05T21:18:46.855Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cf/ce/727995bad8916c2a93ef0b8b20367487e58d8a67d09d1612e2329530f504/video_utils-2.4.7-py3-none-any.whl", hash = "sha256:2f8da422bb42df35d18f0da9eb23a38aaa8993ca63f1bca57b4dbb105e72b7f7", size = 8466, upload-time = "2025-07-05T10:55:34.48Z" },
+    { url = "https://files.pythonhosted.org/packages/75/7f/79e9b1ba40fd8a51c1e91d1d611458032c0774ab9e1a7f825b2a5976e2fc/video_utils-2.5.3-py3-none-any.whl", hash = "sha256:fd837f61eb98b7759ca2681cbce59e29e4c0c924fc162bf9843ea8d7b8f903b7", size = 9627, upload-time = "2026-10-05T21:18:46.016Z" },
 ]
 
 [[package]]

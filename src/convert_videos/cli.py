@@ -111,7 +111,7 @@ def configure_logger(verbose):
 @click.option("--dry-run", is_flag=True, help="Do not make actual changes")
 @click.option(
     "--encoder",
-    type=click.Choice(["auto-detect", "software", "nvidia", "intel"]),
+    type=click.Choice(["auto-detect", "software", "nvidia", "intel", "amd"]),
     default="auto-detect",
     show_default=True,
     help="Optionally use a hardware encoder to speed things up.",
@@ -156,6 +156,8 @@ def main(
         encoder = "software"
         if hardware_support["intel_quicksync"]:
             encoder = "intel"
+        if hardware_support["amd_vaapi"]:
+            encoder = "amd"
         if hardware_support["nvidia_nvenc"]:
             encoder = "nvidia"
         log.info(f"Using encoder: {encoder}")

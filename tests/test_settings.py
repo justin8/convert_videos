@@ -45,6 +45,14 @@ def test_video_settings_avc_intel():
     )
 
 
+def test_video_settings_avc_amd():
+    target = VideoSettings(Codec("AVC"), 25, "slow", encoder="amd")
+    assert (
+        str(target)
+        == " -map 0:v -map 0:s? -c:s copy -vcodec h264_vaapi -preset slow -rc_mode CQP -qp 25"
+    )
+
+
 def test_video_settings_hevc():
     target = VideoSettings(Codec("HEVC"), 25, "slow", None)  # type: ignore
     assert (
@@ -69,6 +77,14 @@ def test_video_settings_hevc_intel():
     )
 
 
+def test_video_settings_hevc_amd():
+    target = VideoSettings(Codec("HEVC"), 25, "slow", encoder="amd")
+    assert (
+        str(target)
+        == " -map 0:v -map 0:s? -c:s copy -vcodec hevc_vaapi -preset slow -rc_mode CQP -qp 25 -strict -2"
+    )
+
+
 def test_video_settings_width():
     target = VideoSettings(
         codec=Codec("AVC"), quality=25, preset="slow", width=720, encoder="software"
@@ -76,6 +92,16 @@ def test_video_settings_width():
     assert (
         str(target)
         == " -map 0:v -map 0:s? -c:s copy -vcodec h264 -preset slow -crf 25 -vf scale=720:-2"
+    )
+
+
+def test_video_settings_width_amd():
+    target = VideoSettings(
+        codec=Codec("AVC"), quality=25, preset="slow", width=720, encoder="amd"
+    )
+    assert (
+        str(target)
+        == " -map 0:v -map 0:s? -c:s copy -vcodec h264_vaapi -preset slow -rc_mode CQP -qp 25 -vf scale_vaapi=720:-2"
     )
 
 

@@ -44,7 +44,7 @@ Options:
   --container TEXT                Specify a video container to convert the
                                   videos in to  [default: mkv]
   --dry-run                       Do not make actual changes
-  --encoder [auto-detect|software|nvidia|intel]
+  --encoder [auto-detect|software|nvidia|intel|amd]
                                   Optionally use a hardware encoder to speed
                                   things up.  [default: auto-detect]
   --audio-language TEXT           Only include audio streams in this language
@@ -90,7 +90,11 @@ Videos can be resized automatically by providing a width. Height is automaticall
 
 ### Hardware Acceleration
 
-Hardware acceleration is supported on nVidia and Intel devices.
+Hardware acceleration is supported on AMD, nVidia, and Intel devices.
+
+Caveats for AMD:
+
+- Conversions use VA-API with CQP (Constant Quantization Parameter) mode for the quality setting.
 
 Caveats for nVidia:
 

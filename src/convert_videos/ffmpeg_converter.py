@@ -53,6 +53,8 @@ class FFmpegConverter:
                 output = " -hwaccel cuda"
             if self.video_settings.encoder == "intel":
                 output = " -hwaccel qsv -hwaccel_output_format qsv"
+            if self.video_settings.encoder == "amd":
+                output = " -hwaccel vaapi -hwaccel_output_format vaapi"
             return output
 
         output = (
