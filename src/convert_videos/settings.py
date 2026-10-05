@@ -111,7 +111,7 @@ class VideoSettings:
     def _get_stream_settings(self):
         output = " -map 0:v"  # Include first video stream
         if self.subtitle_language:
-            output += f" -map 0:s:m:language:{to_iso639_2(self.subtitle_language)}?"
+            output += f" -map 0:s:m:language:{to_iso639_2(self.subtitle_language)}"
         else:
             output += " -map 0:s?"  # Include all subtitle streams, if they exist
         output += " -c:s copy"

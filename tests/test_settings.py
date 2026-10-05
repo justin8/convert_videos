@@ -114,7 +114,7 @@ def test_video_language_filter_fullname():
     target = VideoSettings(Codec("AVC"), 25, "slow", subtitle_language="english")
     assert (
         str(target)
-        == " -map 0:v -map 0:s:m:language:eng? -c:s copy -vcodec h264 -preset slow -crf 25"
+        == " -map 0:v -map 0:s:m:language:eng -c:s copy -vcodec h264 -preset slow -crf 25"
     )
 
 
@@ -122,5 +122,5 @@ def test_video_language_filter_shortcode():
     target = VideoSettings(Codec("AVC"), 25, "slow", subtitle_language="jpn")
     assert (
         str(target)
-        == " -map 0:v -map 0:s:m:language:jpn? -c:s copy -vcodec h264 -preset slow -crf 25"
+        == " -map 0:v -map 0:s:m:language:jpn -c:s copy -vcodec h264 -preset slow -crf 25"
     )
